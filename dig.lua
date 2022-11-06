@@ -110,10 +110,19 @@ end
 
 
 
-function dig()
+function dig(torchesAvailable)
+    if torchesAvailable == 0 then
+        print("invalid block provided in torch slot: " .. SLOTS.TORCH .. " not using torches")
+    end
     -- Positive X: Forward
     -- Positive Y: Right
-    -- currentDirection: right is positive, left is negative. 0-3 are valid values, wraps.
+    -- directionFaced: x [-1, 0, 1] y [-1, 0, 1] 
+    -- x:1 would mean facing in the starting direction, 
+    -- x:-1 would be facing away from the starting direction
+    -- y:1 would be facing right
+    -- y:-1 would be facing left
+    -- if x is not 0 then y MUST be 0
+    -- if y is not 0 then x MUST be 0
     local position = {
         x = 0,
         y = 0,
@@ -145,6 +154,16 @@ function dig()
             return
         end
 
+        -- attempt to place torch every 7th block
+        if torchesAvailable > 1 && count % 7 == 0 then
+            turtle.select(SLOTS.TORCH)
+            placed = turtle.placeUp()
+            if placed then
+                torchesAvailable = torchesAvailable - 1
+            end
+        end
+        
+
         dug = digIfSafe(DIRECTIONS.DOWN)
         if not dug then
             return
@@ -159,8 +178,14 @@ function startUp()
     if not fuel then
         print("no fuel found in fuel slot: " .. SLOTS.FUEL)
     end
-
-    dig()
+    -- check torches availability
+    detail = turtle.getItemDetail(SLOTS.TORCH)
+    torchesAvailable = 0
+    if detail && detail.name == "minecraft:torch" then
+        torchesAvailable = detail.count
+    end
+    
+    dig(torchesAvailable)
 end
 
 startUp()
