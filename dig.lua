@@ -6,7 +6,7 @@
     -- later works around the deposit and carries on digging the tunnel
 
 function tableContains(table, val)
-    for i, v, in ipairs(table) do
+    for i, v in ipairs(table) do
         if  v == val then
             return true
         end
