@@ -155,9 +155,9 @@ function dig(torchesAvailable)
         end
 
         -- attempt to place torch every 7th block
-        if torchesAvailable > 1 && count % 7 == 0 then
+        if torchesAvailable > 1 and count % 7 == 0 then
             turtle.select(SLOTS.TORCH)
-            placed = turtle.placeUp()
+            placed = turtle.placeDown()
             if placed then
                 torchesAvailable = torchesAvailable - 1
             end
@@ -181,7 +181,7 @@ function startUp()
     -- check torches availability
     detail = turtle.getItemDetail(SLOTS.TORCH)
     torchesAvailable = 0
-    if detail && detail.name == "minecraft:torch" then
+    if detail and detail.name == "minecraft:torch" then
         torchesAvailable = detail.count
     end
     
