@@ -15,7 +15,7 @@ function tableContains(table, val)
 end
 
 function blockIsResource(blockToCheck)
-    local resourceBlocks = {"minecraft:diorite"}
+    local resourceBlocks = {"minecraft:diorite", "minecraft:jungle_planks"}
     return tableContains(resourceBlocks, blockToCheck)
 end
 
@@ -39,22 +39,33 @@ function digUpIfSafe()
     end
 end
 
+function refuelIfBelow(fuelLimit)
+    if turtle.getFuelLevel() < fuelLimit then
+        print("refueling")
+        success = turtle.refuel()
+        if not success then
+            print("failed to refuel")
+            return
+        end
+    end
+end
+
 function dig()
     local count = 0
     while true do
         if count > 10 then
             break
         end
-        if turtle.getFuelLevel() < 2 then
-            turtle.refuel()
-        end
 
+        refuelIfBelow(2)
 
         local dug = digIfSafe()
         if not dug then
             print("dig not safe")
             return
         end
+
+        turtle.forward()
 
         dug = digUpIfSafe()
         if not dug then
