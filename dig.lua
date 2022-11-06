@@ -5,13 +5,13 @@
 -- for now pauses at this point
     -- later works around the deposit and carries on digging the tunnel
 SLOTS = {
-    FUEL = 1
+    FUEL = 1,
     TORCH = 2
 }
 
 DIRECTIONS = {
-    FORWARD = "forward"
-    UP = "up"
+    FORWARD = "forward",
+    UP = "up",
     DOWN = "down"
 }
 
@@ -38,19 +38,19 @@ function blockIsResource(blockToCheck)
 end
 
 function digIfSafe(direction)
-    if direction == DIRECTIONS.FORWARD
+    if direction == DIRECTIONS.FORWARD then
         local hasBlock, data = turtle.inspect()
         if not blockIsResource(data.name) then
             turtle.dig()
             return true
         end
-    elseif direction == DIRECTIONS.UP
+    elseif direction == DIRECTIONS.UP then
         local hasBlock, data = turtle.inspectUp()
         if not blockIsResource(data.name) then
             turtle.digUp()
             return true
         end
-    elseif direction == DIRECTIONS.DOWN
+    elseif direction == DIRECTIONS.DOWN then
         local hasBlock, data = turtle.inspectDown()
         if not blockIsResource(data.name) then
             turtle.digDown()
