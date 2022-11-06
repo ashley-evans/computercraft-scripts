@@ -42,7 +42,7 @@ function dig()
         if count > 10 then
             break
         end
-        if turtle.getFuelLevel < 2 then
+        if turtle.getFuelLevel() < 2 then
             turtle.refuel()
         end
 
