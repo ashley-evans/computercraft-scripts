@@ -5,15 +5,18 @@
 -- for now pauses at this point
     -- later works around the deposit and carries on digging the tunnel
 
-
-function blockIsResource(blockToCheck)
-    local resourceBlocks = {"minecraft:diorite"}
-    for i, resourceBlock in resourceBlocks do
-        if resourceBlock == blockToCheck then
+function tableContains(table, val)
+    for i, v, in ipairs(table) do
+        if  v == val then
             return true
         end
     end
     return false
+end
+
+function blockIsResource(blockToCheck)
+    local resourceBlocks = {"minecraft:diorite"}
+    return tableContains(resourceBlocks, blockToCheck)
 end
 
 function digIfSafe() 
