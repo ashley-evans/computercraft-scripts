@@ -114,7 +114,14 @@ function dig()
     -- Positive X: Forward
     -- Positive Y: Right
     -- currentDirection: right is positive, left is negative. 0-3 are valid values, wraps.
-    local position = {x: 0, y: 0, directionFaced: {x: 1, y: 0}}
+    local position = {
+        x = 0,
+        y = 0,
+        directionFaced = {
+            x = 1,
+            y = 0
+        }
+    }
     local count = 0
     while true do
         if count > 100 then
