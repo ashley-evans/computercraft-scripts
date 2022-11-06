@@ -12,7 +12,8 @@ SLOTS = {
 DIRECTIONS = {
     FORWARD = "forward",
     UP = "up",
-    DOWN = "down"
+    DOWN = "down",
+    BACK = "back"
 }
 
 function tableContains(table, val)
@@ -86,11 +87,37 @@ function refuelIfBelow(fuelLimit)
 end
 
 
+function move(currentPosition, directionToMove)
+    currentDirection = currentPosition.directionFaced
+    moved = false
+    if directionToMove == DIRECTIONS.FORWARD then
+        moved = turtle.forward()
+        if moved then
+            currentPosition.x = currentPosition.x + currentDirection.x
+            currentPosition.y = currentPosition.y + currentDirection.y
+        end
+    elseif directionToMove == DIRECTIONS.BACK then
+        moved = turtle.back()
+        if moved then
+            currentPosition.x = currentPosition.x - currentDirection.x
+            currentPosition.y = currentPosition.y - currentDirection.y
+        end
+    else
+        print("unexpected direction for movement: " .. directionToMove)
+    end
+    return moved
+end
+
+
 
 function dig()
+    -- Positive X: Forward
+    -- Positive Y: Right
+    -- currentDirection: right is positive, left is negative. 0-3 are valid values, wraps.
+    local position = {x: 0, y: 0, directionFaced: {x: 1, y: 0}}
     local count = 0
     while true do
-        if count > 10 then
+        if count > 100 then
             break
         end
 
@@ -101,7 +128,10 @@ function dig()
             return
         end
 
-        turtle.forward()
+        moved = move(position, DIRECTIONS.FORWARD)
+        if moved then
+            count = count + 1
+        end
 
         dug = digIfSafe(DIRECTIONS.UP)
         if not dug then
@@ -112,8 +142,6 @@ function dig()
         if not dug then
             return
         end
-
-        count = count + 1
     end
 end
 
