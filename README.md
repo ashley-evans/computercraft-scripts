@@ -1,5 +1,7 @@
 # ComputerCraft Scripts
 
+[![Validate](https://github.com/ashley-evans/computercraft-scripts/actions/workflows/ci.yml/badge.svg)](https://github.com/ashley-evans/computercraft-scripts/actions/workflows/ci.yml)
+
 ## Requirements
 
 Lua Version: 5.4.4
