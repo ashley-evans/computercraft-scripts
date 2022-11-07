@@ -1,3 +1,4 @@
+local tableUtils = require("helpers/table-utils")
 -- digs a 2x1 tunnel 
 -- auto refuels
 -- keeps track of how much fuel total it has in in inv to determine its "point of no return" and then comes back to start point
@@ -16,14 +17,6 @@ DIRECTIONS = {
     BACK = "back"
 }
 
-function tableContains(table, val)
-    for i, v in ipairs(table) do
-        if  v == val then
-            return true
-        end
-    end
-    return false
-end
 
 function blockIsResource(blockToCheck)
     local resourceBlocks = {
@@ -44,7 +37,7 @@ function blockIsResource(blockToCheck)
         "minecraft:nether_gold_ore",
         "minecraft:ancientDebris"
     }
-    return tableContains(resourceBlocks, blockToCheck)
+    return tableUtils.tableContains(resourceBlocks, blockToCheck)
 end
 
 function digIfSafe(direction)
