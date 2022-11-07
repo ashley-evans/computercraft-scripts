@@ -1,0 +1,17 @@
+name: Validate
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: leafo/gh-actions-lua@v9
+        with:
+          luaVersion: "5.4.4"
+      - uses: leafo/gh-actions-luarocks@v4
+      - name: Install dependencies
+        run: |
+          luarocks install luaunit
+      - name: Run tests
+        run: |
+          xargs -r0a <(find . -name *.test.lua -print0) -I {} sh -c 'echo "\nRunning tests in: {}\n"; lua {} --verbose'
