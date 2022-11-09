@@ -23,3 +23,11 @@ All tests can be executed by running:
 ```shell
 busted .
 ```
+
+## Setup on Turtle
+
+All of the scripts in this repository can be installed on a turtle by running the following commands on the turtle itself:
+```shell
+wget https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/setup.lua setup
+setup
+```
