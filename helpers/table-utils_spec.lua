@@ -1,16 +1,11 @@
----@diagnostic disable: undefined-global
-package.path = package.path .. (";" .. arg[0]:match("(.-)[^\\/]+$") .. "?.lua;")
+package.path = package.path .. ";" .. debug.getinfo(1).short_src:match("(.-)[^\\/]+$") .. "?.lua;"
 
-require("luarocks.loader")
-require("busted")
 local tableUtils = require("table-utils")
 
 describe("helpers", function ()
     it("table Contains works as expected", function ()
-        assert.isTrue(tableUtils.tableContains({"test", "foo", "bar"}, "test"))
-        assert.isFalse(tableUtils.tableContains({"test", "foo", "bar"}, "baz"))
-        assert.isTrue(tableUtils.tableContains({"test", "foo", "bar"}, "bar"))
+        assert.is_true(tableUtils.tableContains({"test", "foo", "bar"}, "test"))
+        assert.is_false(tableUtils.tableContains({"test", "foo", "bar"}, "baz"))
+        assert.is_true(tableUtils.tableContains({"test", "foo", "bar"}, "bar"))
     end)
 end)
-
-
