@@ -9,12 +9,12 @@ local function genericActionFailure()
 end
 
 local function digForwardAction(args)
-    return t.digIfSafe(DIRECTIONS.FORWARD, args[0])
+    return t.digIfSafe(t.DIRECTIONS.FORWARD, args[0])
 end
 
 local function digUpAndDownAction(args)
-    local upSuccess = t.digIfSafe(DIRECTIONS.UP, args[0])
-    local downSuccess = t.digIfSafe(DIRECTIONS.DOWN, args[0])
+    local upSuccess = t.digIfSafe(t.DIRECTIONS.UP, args[0])
+    local downSuccess = t.digIfSafe(t.DIRECTIONS.DOWN, args[0])
     return upSuccess and downSuccess
 end
 
@@ -47,7 +47,7 @@ local function moveLine(distance, before, after)
             end
         end
 
-        moved = t.move(position, DIRECTIONS.FORWARD)
+        moved = t.move(position, t.DIRECTIONS.FORWARD)
         if not moved then
             i = i - 1
         end
