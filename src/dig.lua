@@ -19,13 +19,13 @@ local function digUpAndDownAction(args)
 end
 
 local ACTIONS = {
-    digBefore = {
+    digForward = {
         args = {t.ORE_BLOCKS},
         action = digForwardAction,
         success = genericActionSuccess,
         failure = genericActionFailure
     },
-    digAfter = {
+    digUpAndDown = {
         args = {t.ORE_BLOCKS},
         action = digUpAndDownAction,
         success = genericActionSuccess,
@@ -40,7 +40,7 @@ local ACTIONS = {
 }
 
 local function moveLine(distance, currentPosition, before, after)
-    for i = 0, distance do
+    for i = 1, distance do
         t.refuelIfBelow(2)
 
         local success = before.action(before.args)
@@ -70,40 +70,19 @@ local function moveLine(distance, currentPosition, before, after)
     end
 end
 
-local function uTurn(direction, currentPosition, before, after)
-    local success = before.action(before.args)
-    if success then
-        before.success()
-    else
-        local recovered = before.failure()
-        if not recovered then
-            return
-        end
-    end
-    
+local function uTurn(direction, currentPosition)    
     t.turn(currentPosition, direction)
-    moveLine(1, currentPosition, digBefore, ACTIONS.noOp)
+    moveLine(1, currentPosition, ACTIONS.digForward, ACTIONS.digUpAndDown)
     t.turn(currentPosition, direction)
-    
-    success = after.action(after.args)
-    if success then
-        after.success()
-    else
-        local recovered = after.failure()
-        if not recovered then
-            return
-        end
-    end
 end
-
 
 function startUp()
     local position = t.createPosition()
-    for i = 0, 20 do
-        moveLine(64, position, ACTIONS.digBefore, ACTIONS.digAfter)
-        uturn(t.DIRECTIONS.RIGHT, position, ACTIONS.noOp, ACTIONS.noOp)
-        moveLine(64, position, ACTIONS.digBefore, ACTIONS.digAfter)
-        uturn(t.DIRECTIONS.LEFT, position, ACTIONS.noOp, ACTIONS.noOp)
+    for i = 1, 20 do
+        moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
+        uTurn(t.DIRECTIONS.RIGHT, position)
+        moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
+        uTurn(t.DIRECTIONS.LEFT, position)
     end
 end
 

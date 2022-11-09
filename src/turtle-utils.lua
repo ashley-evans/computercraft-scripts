@@ -93,7 +93,7 @@ local function move(currentPosition, directionToMove)
 end
 
 local function compareDirections(directionA, directionB)
-    return directionA.x == directionB.x && directionA.y == directionB.y
+    return directionA.x == directionB.x and directionA.y == directionB.y
 end
 
 local function turn(currentPosition, directionToTurn)
