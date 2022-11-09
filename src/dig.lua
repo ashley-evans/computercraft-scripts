@@ -70,9 +70,9 @@ local function moveLine(distance, currentPosition, before, after)
     end
 end
 
-local function uTurn(direction, currentPosition)    
+local function uTurn(direction, currentPosition, distance)    
     t.turn(currentPosition, direction)
-    moveLine(1, currentPosition, ACTIONS.digForward, ACTIONS.digUpAndDown)
+    moveLine(distance, currentPosition, ACTIONS.digForward, ACTIONS.digUpAndDown)
     t.turn(currentPosition, direction)
 end
 
@@ -80,9 +80,9 @@ function startUp()
     local position = t.createPosition()
     for i = 1, 20 do
         moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
-        uTurn(t.DIRECTIONS.RIGHT, position)
+        uTurn(t.DIRECTIONS.RIGHT, position, 1)
         moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
-        uTurn(t.DIRECTIONS.LEFT, position)
+        uTurn(t.DIRECTIONS.LEFT, position, 1)
     end
 end
 
