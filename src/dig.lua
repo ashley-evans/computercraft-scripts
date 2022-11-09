@@ -1,4 +1,4 @@
-local t = require("helpers/turtle-utils")
+local t = require("turtle-utils")
 
 local function genericActionSuccess()
     return true
@@ -9,12 +9,12 @@ local function genericActionFailure()
 end
 
 local function digForwardAction(args)
-    return t.digIfSafe(t.DIRECTIONS.FORWARD, args[0])
+    return t.digIfSafe(t.DIRECTIONS.FORWARD, args[1])
 end
 
 local function digUpAndDownAction(args)
-    local upSuccess = t.digIfSafe(t.DIRECTIONS.UP, args[0])
-    local downSuccess = t.digIfSafe(t.DIRECTIONS.DOWN, args[0])
+    local upSuccess = t.digIfSafe(t.DIRECTIONS.UP, args[1])
+    local downSuccess = t.digIfSafe(t.DIRECTIONS.DOWN, args[1])
     return upSuccess and downSuccess
 end
 
@@ -52,7 +52,7 @@ local function moveLine(distance, before, after)
             i = i - 1
         end
 
-        success = after.action()
+        success = after.action(after.args)
         if success then
             after.success()
         else
