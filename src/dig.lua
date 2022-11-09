@@ -18,36 +18,42 @@ local function digUpAndDownAction(args)
     return upSuccess and downSuccess
 end
 
-local digBefore = {
-    args = {t.ORE_BLOCKS},
-    action = digForwardAction,
-    success = genericActionSuccess,
-    failure = genericActionFailure
+local ACTIONS = {
+    digBefore = {
+        args = {t.ORE_BLOCKS},
+        action = digForwardAction,
+        success = genericActionSuccess,
+        failure = genericActionFailure
+    },
+    digAfter = {
+        args = {t.ORE_BLOCKS},
+        action = digUpAndDownAction,
+        success = genericActionSuccess,
+        failure = genericActionFailure
+    },
+    noOp = {
+        args = {},
+        action = genericActionSuccess,
+        success = genericActionSuccess,
+        failure = genericActionSuccess
+    }    
 }
 
-local digAfter = {
-    args = {t.ORE_BLOCKS},
-    action = digUpAndDownAction,
-    success = genericActionSuccess,
-    failure = genericActionFailure
-}
-
-local function moveLine(distance, before, after) 
-    position = t.createPosition()
+local function moveLine(distance, currentPosition, before, after)
     for i = 0, distance do
         t.refuelIfBelow(2)
 
-        success = before.action(before.args)
+        local success = before.action(before.args)
         if success then
             before.success()
         else
-            recovered = before.failure()
+            local recovered = before.failure()
             if not recovered then
                 return
             end
         end
 
-        moved = t.move(position, t.DIRECTIONS.FORWARD)
+        local moved = t.move(currentPosition, t.DIRECTIONS.FORWARD)
         if not moved then
             i = i - 1
         end
@@ -56,7 +62,7 @@ local function moveLine(distance, before, after)
         if success then
             after.success()
         else
-            recovered = after.failure()
+            local recovered = after.failure()
             if not recovered then
                 return
             end
@@ -64,12 +70,41 @@ local function moveLine(distance, before, after)
     end
 end
 
-function uTurn(direction, before, after)
+local function uTurn(direction, currentPosition, before, after)
+    local success = before.action(before.args)
+    if success then
+        before.success()
+    else
+        local recovered = before.failure()
+        if not recovered then
+            return
+        end
+    end
+    
+    t.turn(currentPosition, direction)
+    moveLine(1, currentPosition, digBefore, ACTIONS.noOp)
+    t.turn(currentPosition, direction)
+    
+    success = after.action(after.args)
+    if success then
+        after.success()
+    else
+        local recovered = after.failure()
+        if not recovered then
+            return
+        end
+    end
 end
 
 
 function startUp()
-    moveLine(100, digBefore, digAfter)
+    local position = t.createPosition()
+    for i = 0, 20 do
+        moveLine(64, position, ACTIONS.digBefore, ACTIONS.digAfter)
+        uturn(t.DIRECTIONS.RIGHT, position, ACTIONS.noOp, ACTIONS.noOp)
+        moveLine(64, position, ACTIONS.digBefore, ACTIONS.digAfter)
+        uturn(t.DIRECTIONS.LEFT, position, ACTIONS.noOp, ACTIONS.noOp)
+    end
 end
 
 startUp()

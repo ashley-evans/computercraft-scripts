@@ -92,17 +92,59 @@ local function move(currentPosition, directionToMove)
     return moved
 end
 
+local function compareDirections(directionA, directionB)
+    return directionA.x == directionB.x && directionA.y == directionB.y
+end
+
 local function turn(currentPosition, directionToTurn)
+    local dir = currentPosition.directionFaced
+    directions = {
+        north = {
+            x = 1,
+            y = 0
+        },
+        west = {
+            x = 0,
+            y = -1
+        },
+        south = {
+            x = -1,
+            y = 0
+        },
+        east = {
+            x = 0, 
+            y = 1
+        }
+
+    }
     if directionToTurn == DIRECTIONS.LEFT then
         result = turtle.turnLeft()
         if not result == true then
             print(result)
             return false
-        else
-            currentPosition.directionFaced = {}
+        elseif compareDirections(dir, directions.north) then
+            currentPosition.directionFaced = directions.west
+        elseif compareDirections(dir, directions.west) then
+            currentPosition.directionFaced = directions.south
+        elseif compareDirections(dir, directions.south) then
+            currentPosition.directionFaced = directions.east
+        elseif compareDirections(dir, directions.east) then
+            currentPosition.directionFaced = directions.north
         end
     elseif directionToTurn == DIRECTIONS.RIGHT then
-
+        result = turtle.turnRight()
+        if not result == true then
+            print(result)
+            return false
+        elseif compareDirections(dir, directions.north) then
+            currentPosition.directionFaced = directions.east
+        elseif compareDirections(dir, directions.west) then
+            currentPosition.directionFaced = directions.north
+        elseif compareDirections(dir, directions.south) then
+            currentPosition.directionFaced = directions.west
+        elseif compareDirections(dir, directions.east) then
+            currentPosition.directionFaced = directions.south
+        end
     else
         print("unexpected direction for turning: " .. directionToTurn)
     end
@@ -135,5 +177,6 @@ return {
     digIfSafe = digIfSafe,
     refuelIfBelow = refuelIfBelow,
     move = move,
+    turn = turn,
     createPosition = createPosition
 }
