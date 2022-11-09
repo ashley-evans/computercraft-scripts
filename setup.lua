@@ -33,14 +33,14 @@ end
 
 -- Helpers
 
-written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/helpers/table-utils.lua", "./helpers/table-utils.lua")
+written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/table-utils.lua", "./table-utils.lua")
 if not written then
-    print("An error occurred obtaining helpers/table-utils.lua from GitHub")
+    print("An error occurred obtaining table-utils.lua from GitHub")
     return false
 end
 
-written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/helpers/turtle-utils.lua", "./helpers/turtle-utils.lua")
+written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/turtle-utils.lua", "./turtle-utils.lua")
 if not written then
-    print("An error occurred obtaining helpers/turtle-utils.lua from GitHub")
+    print("An error occurred obtaining turtle-utils.lua from GitHub")
     return false
 end

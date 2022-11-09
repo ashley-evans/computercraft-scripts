@@ -1,3 +1,5 @@
+tableUtils = require("table-utils")
+
 local SLOTS = {
     FUEL = 1,
     TORCH = 2
@@ -7,7 +9,9 @@ local DIRECTIONS = {
     FORWARD = "forward",
     UP = "up",
     DOWN = "down",
-    BACK = "back"
+    BACK = "back",
+    LEFT = "left",
+    RIGHT = "right"
 }
 
 local ORE_BLOCKS = {
@@ -88,6 +92,22 @@ local function move(currentPosition, directionToMove)
     return moved
 end
 
+local function turn(currentPosition, directionToTurn)
+    if directionToTurn == DIRECTIONS.LEFT then
+        result = turtle.turnLeft()
+        if not result == true then
+            print(result)
+            return false
+        else
+            currentPosition.directionFaced = {}
+        end
+    elseif directionToTurn == DIRECTIONS.RIGHT then
+
+    else
+        print("unexpected direction for turning: " .. directionToTurn)
+    end
+
+end
 local function createPosition()
     -- Positive X: Forward
     -- Positive Y: Right
