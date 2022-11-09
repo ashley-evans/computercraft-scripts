@@ -38,3 +38,9 @@ if not written then
     print("An error occurred obtaining helpers/table-utils.lua from GitHub")
     return false
 end
+
+written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/helpers/turtle-utils.lua", "./helpers/turtle-utils.lua")
+if not written then
+    print("An error occurred obtaining helpers/turtle-utils.lua from GitHub")
+    return false
+end
