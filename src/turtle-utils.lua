@@ -81,12 +81,14 @@ local function move(currentPosition, directionToMove)
         if moved then
             currentPosition.x = currentPosition.x + currentDirection.x
             currentPosition.y = currentPosition.y + currentDirection.y
+            table.insert(currentPosition.moveHistory, {x = currentPosition.x, y = currentPosition.y})
         end
     elseif directionToMove == DIRECTIONS.BACK then
         moved = t.back()
         if moved then
             currentPosition.x = currentPosition.x - currentDirection.x
             currentPosition.y = currentPosition.y - currentDirection.y
+            table.insert(currentPosition.moveHistory, {x = currentPosition.x, y = currentPosition.y})
         end
     else
         print("unexpected direction for movement: " .. directionToMove)
@@ -169,7 +171,8 @@ local function createPosition()
         directionFaced = {
             x = 1,
             y = 0
-        }
+        },
+        moveHistory = {{x=0, y=0}}
     }
 end
 
