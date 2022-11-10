@@ -1,3 +1,4 @@
+t = require("turtle-port")
 tableUtils = require("table-utils")
 
 local SLOTS = {
@@ -75,13 +76,13 @@ local function move(currentPosition, directionToMove)
     currentDirection = currentPosition.directionFaced
     moved = false
     if directionToMove == DIRECTIONS.FORWARD then
-        moved = turtle.forward()
+        moved = t.forward()
         if moved then
             currentPosition.x = currentPosition.x + currentDirection.x
             currentPosition.y = currentPosition.y + currentDirection.y
         end
     elseif directionToMove == DIRECTIONS.BACK then
-        moved = turtle.back()
+        moved = t.back()
         if moved then
             currentPosition.x = currentPosition.x - currentDirection.x
             currentPosition.y = currentPosition.y - currentDirection.y
