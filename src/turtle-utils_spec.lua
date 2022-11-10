@@ -3,6 +3,17 @@ package.path = package.path .. ";" .. debug.getinfo(1).short_src:match("(.-)[^\\
 local turtleUtils = require("turtle-utils")
 local turtle = require("turtle-port")
 
+describe("default position creation", function()
+    it("creates a default position table", function()
+        local actual = turtleUtils.createPosition()
+
+        assert.are_equal(0, actual.x)
+        assert.are_equal(0, actual.y)
+        assert.are_equal(1, actual.directionFaced.x)
+        assert.are_equal(0, actual.directionFaced.y)
+    end)
+end)
+
 describe("movement", function()
     describe("forward movement", function()
         it("moves the turtle forward", function()
