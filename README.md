@@ -4,8 +4,8 @@
 
 ## Requirements
 
-Lua Version: 5.4.4
-LuaRocks package manager: [Installation Guide](https://github.com/luarocks/luarocks/wiki/Download)
+- Lua Version: 5.4.4
+- LuaRocks package manager: [Installation Guide](https://github.com/luarocks/luarocks/wiki/Download)
 
 ## Testing
 
