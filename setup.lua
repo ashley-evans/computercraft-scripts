@@ -23,7 +23,7 @@ local function storeURLContent(url, path)
     return writeContentToFile(path, content)
 end
 
--- Functions
+-- Scripts
 
 local written = storeURLContent(
     "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/dig.lua",
@@ -35,6 +35,24 @@ if not written then
 end
 
 -- Helpers
+
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/logger.lua",
+    "./logger.lua"
+)
+if not written then
+    print("An error occurred obtaining logger.lua from GitHub")
+    return false
+end
+
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/turtle-port.lua",
+    "./turtle-port.lua"
+)
+if not written then
+    print("An error occurred obtaining turtle-port.lua from GitHub")
+    return false
+end
 
 written = storeURLContent(
     "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/table-utils.lua",
