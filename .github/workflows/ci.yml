@@ -28,4 +28,4 @@ jobs:
           luarocks install luacheck
       - name: Run linter
         run: |
-          luacheck ${GITHUB_WORKSPACE}
+          luacheck ${GITHUB_WORKSPACE} --exclude-files .luarocks/**/*
