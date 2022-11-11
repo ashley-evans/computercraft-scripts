@@ -31,7 +31,7 @@ busted .
 
 ## Linting
 
-To run the linter on the files in this project, the [LuaCheck] linter should be installed. LuaCheck can be installed by running:
+To run the linter on the files in this project, the [LuaCheck](https://luacheck.readthedocs.io/en/stable/index.html) linter should be installed. LuaCheck can be installed by running:
 
 ```shell
 sudo luarocks install luacheck
