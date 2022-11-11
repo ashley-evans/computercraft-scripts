@@ -36,11 +36,12 @@ local ACTIONS = {
         action = genericActionSuccess,
         success = genericActionSuccess,
         failure = genericActionSuccess
-    }    
+    }
 }
 
 local function moveLine(distance, currentPosition, before, after)
-    for i = 1, distance do
+    local i = 1
+    while i < distance do
         t.refuelIfBelow(2)
 
         local success = before.action(before.args)
@@ -54,8 +55,8 @@ local function moveLine(distance, currentPosition, before, after)
         end
 
         local moved = t.move(currentPosition, t.DIRECTIONS.FORWARD)
-        if not moved then
-            i = i - 1
+        if moved then
+            i = i + 1
         end
 
         success = after.action(after.args)
@@ -70,15 +71,15 @@ local function moveLine(distance, currentPosition, before, after)
     end
 end
 
-local function uTurn(direction, currentPosition, distance)    
+local function uTurn(direction, currentPosition, distance)
     t.turn(currentPosition, direction)
     moveLine(distance, currentPosition, ACTIONS.digForward, ACTIONS.digUpAndDown)
     t.turn(currentPosition, direction)
 end
 
-function startUp()
+local function startUp()
     local position = t.createPosition()
-    for i = 1, 20 do
+    for _ = 1, 20 do
         moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
         uTurn(t.DIRECTIONS.RIGHT, position, 1)
         moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)

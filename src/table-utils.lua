@@ -1,5 +1,5 @@
 local function tableContains(table, val)
-    for i, v in ipairs(table) do
+    for _, v in ipairs(table) do
         if  v == val then
             return true
         end

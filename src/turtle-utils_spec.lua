@@ -29,9 +29,9 @@ describe("forward movement |", function()
     it("increments X position when forward movement succeeds when facing in starting direction", function()
         stub(turtle, "forward").returns(true)
         local position = turtleUtils.createPosition()
-        
+
         turtleUtils.move(position, turtleUtils.DIRECTIONS.FORWARD)
-    
+
         assert.are_equal(1, position.x)
         assert.are_equal(0, position.y)
     end)
@@ -39,9 +39,9 @@ describe("forward movement |", function()
     it("does not change X position when forward movement fails when facing in starting direction", function()
         stub(turtle, "forward").returns(false)
         local position = turtleUtils.createPosition()
-        
+
         turtleUtils.move(position, turtleUtils.DIRECTIONS.FORWARD)
-    
+
         assert.are_equal(0, position.x)
         assert.are_equal(0, position.y)
     end)
@@ -59,9 +59,9 @@ describe("backward movement |", function()
     it("decrements X position when back movement succeeds when facing in starting direction", function()
         stub(turtle, "back").returns(true)
         local position = turtleUtils.createPosition()
-        
+
         turtleUtils.move(position, turtleUtils.DIRECTIONS.BACK)
-    
+
         assert.are_equal(-1, position.x)
         assert.are_equal(0, position.y)
     end)
@@ -69,9 +69,9 @@ describe("backward movement |", function()
     it("does not change X position when back movement fails when facing in starting direction", function()
         stub(turtle, "back").returns(false)
         local position = turtleUtils.createPosition()
-        
+
         turtleUtils.move(position, turtleUtils.DIRECTIONS.BACK)
-    
+
         assert.are_equal(0, position.x)
         assert.are_equal(0, position.y)
     end)
@@ -95,7 +95,7 @@ describe("left turns |", function()
         assert.are_equal(0, position.directionFaced.x)
         assert.are_equal(-1, position.directionFaced.y)
     end)
-    
+
     it("updates direction to south when turning left twice from starting direction", function()
         stub(turtle, "turnLeft").returns(true)
         local position = turtleUtils.createPosition()
@@ -161,7 +161,7 @@ describe("right turns |", function()
         assert.are_equal(0, position.directionFaced.x)
         assert.are_equal(1, position.directionFaced.y)
     end)
-    
+
     it("updates direction to south when turning right twice from starting direction", function()
         stub(turtle, "turnRight").returns(true)
         local position = turtleUtils.createPosition()
@@ -216,7 +216,7 @@ describe("complex movement |", function()
         stub(turtle, "back").returns(true)
         stub(turtle, "forward").returns(true)
         local position = turtleUtils.createPosition()
-        
+
         turtleUtils.move(position, turtleUtils.DIRECTIONS.FORWARD)
         turtleUtils.turn(position, turtleUtils.DIRECTIONS.RIGHT)
         turtleUtils.move(position, turtleUtils.DIRECTIONS.FORWARD)
@@ -232,7 +232,7 @@ describe("complex movement |", function()
             x = 3, y = -1,
             directionFaced = { x = -1, y = 0 },
             moveHistory={
-                {x=0, y=0}, 
+                {x=0, y=0},
                 {x=1, y=0},
                 {x=1, y=1},
                 {x=1, y=0},

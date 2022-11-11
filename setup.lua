@@ -1,4 +1,4 @@
-function getWebContent(url)
+local function getWebContent(url)
     local response = http.get(url)
     if response ~= nil then
         return response.readAll()
@@ -7,7 +7,7 @@ function getWebContent(url)
     return nil
 end
 
-function writeContentToFile(path, content)
+local function writeContentToFile(path, content)
     local handler = fs.open(path, "w")
     if handler == nil then
         return false
@@ -18,14 +18,17 @@ function writeContentToFile(path, content)
     return true
 end
 
-function storeURLContent(url, path)
+local function storeURLContent(url, path)
     local content = getWebContent(url)
     return writeContentToFile(path, content)
 end
 
 -- Functions
 
-local written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/dig.lua", "./dig.lua")
+local written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/dig.lua",
+    "./dig.lua"
+)
 if not written then
     print("An error occurred obtaining dig.lua from GitHub")
     return false
@@ -33,13 +36,19 @@ end
 
 -- Helpers
 
-written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/table-utils.lua", "./table-utils.lua")
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/table-utils.lua",
+    "./table-utils.lua"
+)
 if not written then
     print("An error occurred obtaining table-utils.lua from GitHub")
     return false
 end
 
-written = storeURLContent("https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/turtle-utils.lua", "./turtle-utils.lua")
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/turtle-utils.lua",
+    "./turtle-utils.lua"
+)
 if not written then
     print("An error occurred obtaining turtle-utils.lua from GitHub")
     return false

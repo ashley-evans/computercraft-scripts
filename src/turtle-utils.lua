@@ -1,6 +1,6 @@
-t = require("turtle-port")
-tableUtils = require("table-utils")
-logger = require("logger")
+local t = require("turtle-port")
+local tableUtils = require("table-utils")
+local logger = require("logger")
 
 local SLOTS = {
     FUEL = 1,
@@ -37,19 +37,19 @@ local ORE_BLOCKS = {
 
 local function digIfSafe(direction, excludedBlocks)
     if direction == DIRECTIONS.FORWARD then
-        local hasBlock, data = t.inspect()
+        local _, data = t.inspect()
         if not tableUtils.tableContains(excludedBlocks, data.name) then
             t.dig()
             return true
         end
     elseif direction == DIRECTIONS.UP then
-        local hasBlock, data = t.inspectUp()
+        local _, data = t.inspectUp()
         if not tableUtils.tableContains(excludedBlocks, data.name) then
             t.digUp()
             return true
         end
     elseif direction == DIRECTIONS.DOWN then
-        local hasBlock, data = t.inspectDown()
+        local _, data = t.inspectDown()
         if not tableUtils.tableContains(excludedBlocks, data.name) then
             t.digDown()
             return true
@@ -65,7 +65,7 @@ local function refuelIfBelow(fuelLimit)
     if t.getFuelLevel() < fuelLimit then
         print("refueling")
         t.select(SLOTS.FUEL)
-        success = t.refuel()
+        local success = t.refuel()
         if not success then
             print("failed to refuel")
             return
@@ -74,8 +74,8 @@ local function refuelIfBelow(fuelLimit)
 end
 
 local function move(currentPosition, directionToMove)
-    currentDirection = currentPosition.directionFaced
-    moved = false
+    local currentDirection = currentPosition.directionFaced
+    local moved = false
     if directionToMove == DIRECTIONS.FORWARD then
         moved = t.forward()
         if moved then
@@ -102,7 +102,7 @@ end
 
 local function turn(currentPosition, directionToTurn)
     local dir = currentPosition.directionFaced
-    directions = {
+    local directions = {
         north = {
             x = 1,
             y = 0
@@ -116,14 +116,14 @@ local function turn(currentPosition, directionToTurn)
             y = 0
         },
         east = {
-            x = 0, 
+            x = 0,
             y = 1
         }
 
     }
     if directionToTurn == DIRECTIONS.LEFT then
-        result = t.turnLeft()
-        if not result == true then
+        local result = t.turnLeft()
+        if result ~= true then
             logger.debug(result)
             return false
         elseif compareDirections(dir, directions.north) then
@@ -136,8 +136,8 @@ local function turn(currentPosition, directionToTurn)
             currentPosition.directionFaced = directions.north
         end
     elseif directionToTurn == DIRECTIONS.RIGHT then
-        result = t.turnRight()
-        if not result == true then
+        local result = t.turnRight()
+        if result ~= true then
             logger.debug(result)
             return false
         elseif compareDirections(dir, directions.north) then
@@ -158,8 +158,8 @@ local function createPosition()
     -- moveHistory: array of x y coordinates, e.g. {{x:0,y:0}, {x:1, y:0}}
     -- Positive X: Forward
     -- Positive Y: Right
-    -- directionFaced: x [-1, 0, 1] y [-1, 0, 1] 
-    -- x:1 would mean facing in the starting direction, 
+    -- directionFaced: x [-1, 0, 1] y [-1, 0, 1]
+    -- x:1 would mean facing in the starting direction,
     -- x:-1 would be facing away from the starting direction
     -- y:1 would be facing right
     -- y:-1 would be facing left

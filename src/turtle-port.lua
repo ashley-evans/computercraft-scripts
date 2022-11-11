@@ -18,10 +18,6 @@ local function select(slot)
     return turtle.select(slot)
 end
 
-local function select(slot)
-    return turtle.select(slot)
-end
-
 local function dig()
     return turtle.dig()
 end
