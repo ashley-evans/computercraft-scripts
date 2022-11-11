@@ -14,7 +14,7 @@ jobs:
           luarocks install busted
       - name: Run tests
         run: |
-          busted .
+          busted ${GITHUB_WORKSPACE}
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -28,4 +28,4 @@ jobs:
           luarocks install luacheck
       - name: Run linter
         run: |
-          luacheck .
+          luacheck ${GITHUB_WORKSPACE}
