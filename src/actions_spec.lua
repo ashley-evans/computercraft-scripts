@@ -83,7 +83,6 @@ describe("action collection", function()
     end)
 
     it("runs each action n times", function()
-        
         local args = { times = 2, actions = {{
             run = function() end
         }}}
@@ -94,7 +93,6 @@ describe("action collection", function()
     end)
 
     it("calls each action with nil, if no args are provided", function()
-        
         local args = { times = 1, actions = {{
             run = function() end
         }}}
@@ -105,7 +103,6 @@ describe("action collection", function()
     end)
 
     it("calls each action with args, if args are provided", function()
-        
         local args = { times = 1, actions = {{
             run = function() end,
             args = "wibble",
@@ -115,11 +112,10 @@ describe("action collection", function()
         actions.collection(args)
         assert.stub(args.actions[1].run).was_called_with(args.actions[1].args)
     end)
-    
 
-    it("when actions are required it keeps calling every action until all required actions have succeeded the specified number of times", function()
+    it("it keeps calling all actions until all required actions have succeeded n times", function()
         -- this is gross
-        -- the run function has scope on variables defined in this test so we can use that to set what the function 
+        -- the run function has scope on variables defined in this test so we can use that to set what the function
         -- returns on subsequent calls. we can use that fact to verify that function calls that return false don't count
         -- toward the "times" count
         local call = 0
@@ -135,12 +131,14 @@ describe("action collection", function()
                 required = true
             },
             {
-                run = function()return returns[call] end, -- this is double gross - we don't want to modify 'call' in this function because its already been modified in the first one 
+                -- this is double gross we don't want to modify 'call' in this function because itsalready been modified
+                -- in the first one
+                run = function()return returns[call] end,
                 args = "dibble",
                 required = false
             }
         }}
-        
+
         spy.on(args.actions[1], "run")
         spy.on(args.actions[2], "run")
         spy.on(args.actions[3], "run")
