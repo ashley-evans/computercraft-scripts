@@ -15,6 +15,14 @@ local DIRECTIONS = {
     LEFT = "left",
     RIGHT = "right"
 }
+local function assertTurnDirection(d)
+    assert(d == DIRECTIONS.LEFT or d == DIRECTIONS.RIGHT)
+end
+
+local function assertMoveDirection(m)
+    assert(m == DIRECTIONS.BACK or m == DIRECTIONS.FORWARD or m == DIRECTIONS.DOWN or m == DIRECTIONS.UP)
+end
+
 
 local ORE_BLOCKS = {
     "minecraft:diamond_ore",
@@ -35,6 +43,37 @@ local ORE_BLOCKS = {
     "minecraft:ancientDebris"
 }
 
+local function createState()
+    return {
+        position = {
+            x = 0,
+            y = 0,
+            directionFaced = {
+                x = 1,
+                y = 0
+            },
+            moveHistory = {{x=0, y=0}} -- array of x y coordinates, e.g. {{x:0,y:0}, {x:1, y:0}}
+        }
+    }
+end
+
+local function assertState(s)
+    assert(s.position)
+    assert(s.position.x)
+    assert(s.position.y)
+    assert(s.position.directionFaced)
+    assert(s.position.directionFaced.x)
+    assert(s.position.directionFaced.y)
+    assert(s.position.moveHistory)
+
+    assert(type(s.position.x) == "number")
+    assert(type(s.position.y) == "number")
+    assert(type(s.position.directionFaced.x) == "number")
+    assert(type(s.position.directionFaced.y) == "number")
+    assert(type(s.position.moveHistory) == "table")
+end
+
+-- returns true if a dig action was performed
 local function digIfSafe(direction, excludedBlocks)
     if direction == DIRECTIONS.FORWARD then
         local _, data = t.inspect()
@@ -61,6 +100,7 @@ local function digIfSafe(direction, excludedBlocks)
     return false
 end
 
+-- returns true if refueled or if refueling wansn't necessary
 local function refuelIfBelow(fuelLimit)
     if t.getFuelLevel() < fuelLimit then
         print("refueling")
@@ -68,27 +108,30 @@ local function refuelIfBelow(fuelLimit)
         local success = t.refuel()
         if not success then
             print("failed to refuel")
-            return
         end
+        return success
     end
+    return true
 end
 
-local function move(currentPosition, directionToMove)
-    local currentDirection = currentPosition.directionFaced
+local function move(state, directionToMove)
+    assertState(state)
+    assertMoveDirection(directionToMove)
+    local currentDirection = state.position.directionFaced
     local moved = false
     if directionToMove == DIRECTIONS.FORWARD then
         moved = t.forward()
         if moved then
-            currentPosition.x = currentPosition.x + currentDirection.x
-            currentPosition.y = currentPosition.y + currentDirection.y
-            table.insert(currentPosition.moveHistory, {x = currentPosition.x, y = currentPosition.y})
+            state.position.x = state.position.x + currentDirection.x
+            state.position.y = state.position.y + currentDirection.y
+            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y})
         end
     elseif directionToMove == DIRECTIONS.BACK then
         moved = t.back()
         if moved then
-            currentPosition.x = currentPosition.x - currentDirection.x
-            currentPosition.y = currentPosition.y - currentDirection.y
-            table.insert(currentPosition.moveHistory, {x = currentPosition.x, y = currentPosition.y})
+            state.position.x = state.position.x - currentDirection.x
+            state.position.y = state.position.y - currentDirection.y
+            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y})
         end
     else
         print("unexpected direction for movement: " .. directionToMove)
@@ -97,10 +140,15 @@ local function move(currentPosition, directionToMove)
 end
 
 local function compareDirections(directionA, directionB)
+    assertTurnDirection(directionA)
+    assertTurnDirection(directionB)
     return directionA.x == directionB.x and directionA.y == directionB.y
 end
 
-local function turn(currentPosition, directionToTurn)
+local function turn(state, directionToTurn)
+    assertState(state)
+    assertTurnDirection(directionToTurn)
+    local currentPosition = state.position
     local dir = currentPosition.directionFaced
     local directions = {
         north = {
@@ -154,28 +202,6 @@ local function turn(currentPosition, directionToTurn)
     end
 end
 
-local function createPosition()
-    -- moveHistory: array of x y coordinates, e.g. {{x:0,y:0}, {x:1, y:0}}
-    -- Positive X: Forward
-    -- Positive Y: Right
-    -- directionFaced: x [-1, 0, 1] y [-1, 0, 1]
-    -- x:1 would mean facing in the starting direction,
-    -- x:-1 would be facing away from the starting direction
-    -- y:1 would be facing right
-    -- y:-1 would be facing left
-    -- if x is not 0 then y MUST be 0
-    -- if y is not 0 then x MUST be 0
-    return {
-        x = 0,
-        y = 0,
-        directionFaced = {
-            x = 1,
-            y = 0
-        },
-        moveHistory = {{x=0, y=0}}
-    }
-end
-
 return {
     SLOTS = SLOTS,
     DIRECTIONS = DIRECTIONS,
@@ -184,5 +210,5 @@ return {
     refuelIfBelow = refuelIfBelow,
     move = move,
     turn = turn,
-    createPosition = createPosition
+    createState = createState
 }

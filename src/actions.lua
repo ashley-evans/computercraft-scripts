@@ -1,3 +1,4 @@
+local tableUtils = require("table-utils")
 -- {
 --     run: collection,
 --     args: {
@@ -8,7 +9,8 @@
 --             required: true
 --         },
 --         {
---             actionType: "digForward"
+--             actionType: "dig"
+--             args:{DIRECTIONS.forward, "position"}
 --         },
 --         {
 --             actionType: "moveForward",
@@ -32,13 +34,32 @@
 -- path to temp (store current location in temp)
 
 local function doAction(action)
-    action.run(action.args)
+    return action.run(action.args)
 end
 
 local function collection(args)
     assert(type(args) == "table", "Arguments must be a table")
     assert(args.times, "Must provide the number of times to execute collection")
     assert(tonumber(args.times), "Number of times provided is not a number")
+    assert(args.actions, "Must provide actions to execute collection")
+    assert(type(args.actions) == "table", "Actions must be a table")
+    
+    local actionCount = tableUtils.tableLength(args.actions)
+    local i = 1
+    while i <= args.times do
+        local allRequirementsMet = true
+        for a = 1, actionCount do
+            local currentAction = args.actions[a]
+            local success = currentAction.run(currentAction.args)
+            if currentAction.required and not success then
+                allRequirementsMet = false
+            end
+        end
+
+        if allRequirementsMet then
+            i = i + 1
+        end
+    end
 end
 
 return {

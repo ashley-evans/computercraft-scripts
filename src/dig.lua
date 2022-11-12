@@ -78,7 +78,7 @@ local function uTurn(direction, currentPosition, distance)
 end
 
 local function startUp()
-    local position = t.createPosition()
+    local position = t.createState().position
     for _ = 1, 20 do
         moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
         uTurn(t.DIRECTIONS.RIGHT, position, 1)
