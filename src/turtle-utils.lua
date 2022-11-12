@@ -140,8 +140,6 @@ local function move(state, directionToMove)
 end
 
 local function compareDirections(directionA, directionB)
-    assertTurnDirection(directionA)
-    assertTurnDirection(directionB)
     return directionA.x == directionB.x and directionA.y == directionB.y
 end
 

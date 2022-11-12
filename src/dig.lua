@@ -39,7 +39,7 @@ local ACTIONS = {
     }
 }
 
-local function moveLine(distance, currentPosition, before, after)
+local function moveLine(distance, state, before, after)
     local i = 1
     while i < distance do
         t.refuelIfBelow(2)
@@ -54,7 +54,7 @@ local function moveLine(distance, currentPosition, before, after)
             end
         end
 
-        local moved = t.move(currentPosition, t.DIRECTIONS.FORWARD)
+        local moved = t.move(state, t.DIRECTIONS.FORWARD)
         if moved then
             i = i + 1
         end
@@ -71,19 +71,20 @@ local function moveLine(distance, currentPosition, before, after)
     end
 end
 
-local function uTurn(direction, currentPosition, distance)
-    t.turn(currentPosition, direction)
-    moveLine(distance, currentPosition, ACTIONS.digForward, ACTIONS.digUpAndDown)
-    t.turn(currentPosition, direction)
+
+local function uTurn(direction, state, distance)
+    t.turn(state, direction)
+    moveLine(distance, state, ACTIONS.digForward, ACTIONS.digUpAndDown)
+    t.turn(state, direction)
 end
 
 local function startUp()
-    local position = t.createState().position
+    local state = t.createState()
     for _ = 1, 20 do
-        moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
-        uTurn(t.DIRECTIONS.RIGHT, position, 1)
-        moveLine(64, position, ACTIONS.digForward, ACTIONS.digUpAndDown)
-        uTurn(t.DIRECTIONS.LEFT, position, 1)
+        moveLine(64, state, ACTIONS.digForward, ACTIONS.digUpAndDown)
+        uTurn(t.DIRECTIONS.RIGHT, state, 1)
+        moveLine(64, state, ACTIONS.digForward, ACTIONS.digUpAndDown)
+        uTurn(t.DIRECTIONS.LEFT, state, 1)
     end
 end
 
