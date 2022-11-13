@@ -12,10 +12,11 @@ local function tableLength(table)
     assert(type(table) == "table", "can only count tableLength of a table")
     local count = 0
     for _ in pairs(table) do
-         count = count + 1 
+         count = count + 1
     end
     return count
 end
+
 return {
     tableContains = tableContains,
     tableLength = tableLength

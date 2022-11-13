@@ -43,7 +43,7 @@ local function collection(args)
     assert(tonumber(args.times), "Number of times provided is not a number")
     assert(args.actions, "Must provide actions to execute collection")
     assert(type(args.actions) == "table", "Actions must be a table")
-    
+
     local actionCount = tableUtils.tableLength(args.actions)
     local i = 1
     while i <= args.times do
