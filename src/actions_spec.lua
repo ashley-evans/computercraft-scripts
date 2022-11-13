@@ -2,32 +2,7 @@ package.path = package.path .. ";" .. debug.getinfo(1).short_src:match("(.-)[^\\
 
 local actions = require("actions")
 local utils = require("turtle-utils")
-
-describe("doAction", function()
-    it("calls action executor when provided a single action", function()
-        local action = {
-            run = function() end
-        }
-        stub(action, "run")
-
-        actions.doAction(action)
-
-        assert.stub(action.run).was_called()
-    end)
-
-    it("calls action executor with arguments when provided", function()
-        local action = {
-            run = function(_) end,
-            args = {"1"}
-        }
-        stub(action, "run")
-
-        actions.doAction(action)
-
-        assert.stub(action.run).was_called_with(action.args)
-    end)
-end)
-
+local match = require("luassert.match")
 
 describe("action collection", function()
     it("throws an error if not provided a valid state", function()
@@ -189,6 +164,146 @@ describe("action collection", function()
         assert.spy(args.actions[1].run).was_called_with(state, args.actions[1].args)
         assert.spy(args.actions[1].run).was_called(3)
     end)
+end)
 
+describe("dig action", function()
+    it("throws an error if not provided with valid state", function()
+        local state = "wibble"
+        local args = {
+            direction = utils.DIRECTIONS.UP
+        }
 
+        assert.has_error(function() actions.dig(state, args) end)
+    end)
+
+    it("throws an error if not provided a valid direction", function()
+        local state = utils.createState()
+        local args = { direction = "wibble" }
+
+        assert.has_error(function() actions.dig(state, args) end)
+    end)
+
+    it("throws an error if not provided a direction", function()
+        local state = utils.createState()
+        local args = {}
+
+        assert.has_error(function() actions.dig(state, args) end)
+    end)
+
+    it("throws an error if excluded is present but not a table", function()
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.UP, excluded = "wibble"}
+
+        assert.has_error(function() actions.dig(state, args) end)
+    end)
+
+    it("calls dig if safe with provided direction", function()
+        stub(utils, "digIfSafe")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD }
+
+        actions.dig(state, args)
+
+        assert.stub(utils.digIfSafe).was_called_with(args.direction, nil)
+    end)
+
+    it("calls dig if safe with provided exclusion list", function()
+        stub(utils, "digIfSafe")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD, excluded = { "dirt" } }
+
+        actions.dig(state, args)
+
+        assert.stub(utils.digIfSafe).was_called_with(match._, args.excluded)
+    end)
+end)
+
+describe("move action", function()
+    it("throws an error if not provided with valid state", function()
+        local state = "wibble"
+        local args = {
+            direction = utils.DIRECTIONS.UP
+        }
+
+        assert.has_error(function() actions.move(state, args) end)
+    end)
+
+    it("throws an error if direction is not valid", function()
+        local state = utils.createState()
+        local args = { direction = "wibble"}
+
+        assert.has_error(function() actions.move(state, args) end)
+    end)
+
+    it("throws an error if direction is not provided", function()
+        local state = utils.createState()
+        local args = {}
+
+        assert.has_error(function() actions.move(state, args) end)
+    end)
+
+    it("calls move with provided state", function()
+        stub(utils, "move")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD }
+
+        actions.move(state, args)
+
+        assert.stub(utils.move).was_called_with(state, match._)
+    end)
+
+    it("calls move with provided direction", function()
+        stub(utils, "move")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD }
+
+        actions.move(state, args)
+
+        assert.stub(utils.move).was_called_with(match._, args.direction)
+    end)
+end)
+
+describe("turn action", function()
+    it("throws an error if not provided with valid state", function()
+        local state = "wibble"
+        local args = {
+            direction = utils.DIRECTIONS.UP
+        }
+
+        assert.has_error(function() actions.turn(state, args) end)
+    end)
+
+    it("throws an error if direction is not valid", function()
+        local state = utils.createState()
+        local args = { direction = "wibble"}
+
+        assert.has_error(function() actions.turn(state, args) end)
+    end)
+
+    it("throws an error if direction is not provided", function()
+        local state = utils.createState()
+        local args = {}
+
+        assert.has_error(function() actions.turn(state, args) end)
+    end)
+
+    it("calls turn with provided state", function()
+        stub(utils, "turn")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD }
+
+        actions.turn(state, args)
+
+        assert.stub(utils.turn).was_called_with(state, match._)
+    end)
+
+    it("calls turn with provided direction", function()
+        stub(utils, "turn")
+        local state = utils.createState()
+        local args = { direction = utils.DIRECTIONS.FORWARD }
+
+        actions.turn(state, args)
+
+        assert.stub(utils.turn).was_called_with(match._, args.direction)
+    end)
 end)

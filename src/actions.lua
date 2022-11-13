@@ -10,8 +10,8 @@ local turtleUtils = require("turtle-utils")
 --             required: true
 --         },
 --         {
---             actionType: "dig"
---             args:{DIRECTIONS.forward, "position"}
+--             run: "dig"
+--             args:{direcion = DIRECTIONS.forward, excluded={}}
 --         },
 --         {
 --             actionType: "moveForward",
@@ -33,10 +33,6 @@ local turtleUtils = require("turtle-utils")
 
 -- path to storage (store current location in temp)
 -- path to temp (store current location in temp)
-
-local function doAction(action)
-    return action.run(action.args)
-end
 
 local function collection(state, args)
     turtleUtils.assertState(state)
@@ -64,12 +60,27 @@ local function collection(state, args)
     end
 end
 
-local function dig(state, args)
-    turtleUtils.digIfSafe()
+local function dig(_, args)
+    assert(args)
+    assert(args.direction, "dig direction is requried")
+    return turtleUtils.digIfSafe(args.direction, args.excluded)
+end
+
+local function move(state, args)
+    assert(args)
+    assert(args.direction, "move direction is requried")
+    return turtleUtils.move(state, args.direction)
+end
+
+local function turn(state, args)
+    assert(args)
+    assert(args.direction, "turn direction is requried")
+    return turtleUtils.turn(state, args.direction)
 end
 
 return {
-    doAction = doAction,
     collection = collection,
-    dig = dig
+    dig = dig,
+    move = move,
+    turn = turn
 }

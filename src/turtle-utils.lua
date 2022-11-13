@@ -23,7 +23,6 @@ local function assertMoveDirection(m)
     assert(m == DIRECTIONS.BACK or m == DIRECTIONS.FORWARD or m == DIRECTIONS.DOWN or m == DIRECTIONS.UP)
 end
 
-
 local ORE_BLOCKS = {
     "minecraft:diamond_ore",
     "minecraft:redstone_ore",
@@ -75,6 +74,12 @@ end
 
 -- returns true if a dig action was performed
 local function digIfSafe(direction, excludedBlocks)
+    assert(direction == DIRECTIONS.FORWARD
+    or direction == DIRECTIONS.UP
+    or direction == DIRECTIONS.DOWN, "Invalid direction given: " .. direction)
+    if not excludedBlocks then
+        excludedBlocks = {}
+    end
     if direction == DIRECTIONS.FORWARD then
         local _, data = t.inspect()
         if not tableUtils.tableContains(excludedBlocks, data.name) then
