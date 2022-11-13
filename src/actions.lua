@@ -1,4 +1,5 @@
 local tableUtils = require("table-utils")
+local turtleUtils = require("turtle-utils")
 -- {
 --     run: collection,
 --     args: {
@@ -37,7 +38,8 @@ local function doAction(action)
     return action.run(action.args)
 end
 
-local function collection(args)
+local function collection(state, args)
+    turtleUtils.assertState(state)
     assert(type(args) == "table", "Arguments must be a table")
     assert(args.times, "Must provide the number of times to execute collection")
     assert(tonumber(args.times), "Number of times provided is not a number")
@@ -50,7 +52,7 @@ local function collection(args)
         local allRequirementsMet = true
         for a = 1, actionCount do
             local currentAction = args.actions[a]
-            local success = currentAction.run(currentAction.args)
+            local success = currentAction.run(state, currentAction.args)
             if currentAction.required and not success then
                 allRequirementsMet = false
             end
@@ -62,7 +64,12 @@ local function collection(args)
     end
 end
 
+local function dig(state, args)
+    turtleUtils.digIfSafe()
+end
+
 return {
     doAction = doAction,
-    collection = collection
+    collection = collection,
+    dig = dig
 }

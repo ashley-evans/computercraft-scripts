@@ -208,5 +208,6 @@ return {
     refuelIfBelow = refuelIfBelow,
     move = move,
     turn = turn,
-    createState = createState
+    createState = createState,
+    assertState = assertState
 }
