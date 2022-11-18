@@ -1,6 +1,6 @@
 local t = require("turtle-utils")
 local a = require("actions")
-local c = require("actions_helpers")
+local c = require("collections")
 
 local function dig()
     local state = t.createState()
