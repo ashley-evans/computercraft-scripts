@@ -24,7 +24,7 @@ local COLLECTION_ACTIONS = {
 }
 
 local function makeUTurnCollection(direction, gap)
-    return
+    return {
         {
             run = a.turn,
             args = { direction = direction }
@@ -37,28 +37,33 @@ local function makeUTurnCollection(direction, gap)
             run = a.turn,
             args = { direction = direction }
         }
+    }
 end
 
 local function dig()
     local state = t.createState()
-    a.collection(state, { times = 10, actions = {
-        {
-            run = a.collection,
-            args = {
-                times = 10,
-                actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
-            }
-        },
-        makeUTurnCollection(t.DIRECTIONS.RIGHT, 3),
-        {
-            run = a.collection,
-            args = {
-                times = 10,
-                actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
-            }
-        },
-        makeUTurnCollection(t.DIRECTIONS.LEFT, 3)
-    }})
+    local collectionArgs = {
+        times = 10,
+        actions = {
+            {
+                run = a.collection,
+                args = {
+                    times = 10,
+                    actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
+                }
+            },
+            table.unpack(makeUTurnCollection(t.DIRECTIONS.RIGHT, 3)),
+            {
+                run = a.collection,
+                args = {
+                    times = 10,
+                    actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
+                }
+            },
+            table.unpack(makeUTurnCollection(t.DIRECTIONS.LEFT, 3))
+        }
+    }
+    a.collection(state, collectionArgs)
 end
 
 dig()
