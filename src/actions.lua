@@ -1,38 +1,5 @@
 local tableUtils = require("table-utils")
 local turtleUtils = require("turtle-utils")
--- {
---     run: collection,
---     args: {
---         times: 10
---         actions: {
---             run: "refuelifBelow",
---             args: {2, 0}
---             required: true
---         },
---         {
---             run: "dig"
---             args:{direcion = DIRECTIONS.forward, excluded={}}
---         },
---         {
---             actionType: "moveForward",
---             required: true
---         },
---         {
---             actionType: "collection"
---         }
---     }
--- }
-
-
--- { run: turtle-utils.move, args: { } }
-
-
--- path to start (Record where we were)
--- deposit to chest
--- path to ???????? (Pick up where we were)
-
--- path to storage (store current location in temp)
--- path to temp (store current location in temp)
 
 local function collection(state, args)
     turtleUtils.assertState(state)

@@ -80,3 +80,12 @@ if not written then
     print("An error occurred obtaining actions.lua from GitHub")
     return false
 end
+
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/collections.lua",
+    "./collections.lua"
+)
+if not written then
+    print("An error occurred obtaining collections.lua from GitHub")
+    return false
+end
