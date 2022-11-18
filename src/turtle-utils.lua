@@ -42,8 +42,26 @@ local ORE_BLOCKS = {
     "minecraft:ancientDebris"
 }
 
+local function takeStock()
+    local stock = {}
+    for i = 1, 16 do
+        local details = t.getItemDetail(i)
+        if details then
+            local name = string.gsub(details.name, "minecraft:", "")
+            if stock[name] then
+                stock[name].slots[i] = details.count
+            else
+                stock[name] = { slots = { [i] = details.count} }
+            end
+        end
+    end
+    return stock
+end
+
 local function createState()
+    local inv = takeStock()
     return {
+        inv = inv,
         position = {
             x = 0,
             y = 0,

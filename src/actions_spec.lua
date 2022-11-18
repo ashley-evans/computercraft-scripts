@@ -1,8 +1,11 @@
 package.path = package.path .. ";" .. debug.getinfo(1).short_src:match("(.-)[^\\/]+$") .. "?.lua;"
 
 local actions = require("actions")
+local turtle = require("turtle-port")
 local utils = require("turtle-utils")
 local match = require("luassert.match")
+
+stub(turtle, "getItemDetail")
 
 describe("action collection", function()
     it("throws an error if not provided a valid state", function()

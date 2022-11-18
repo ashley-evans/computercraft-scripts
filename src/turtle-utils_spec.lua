@@ -6,6 +6,10 @@ local logger = require("logger")
 
 stub(logger, "debug")
 
+before_each(function()
+    stub(turtle, "getItemDetail")
+end)
+
 describe("default state creation |", function()
     it("creates a default state table", function()
         local actual = turtleUtils.createState().position
@@ -14,6 +18,44 @@ describe("default state creation |", function()
         assert.are_equal(0, actual.y)
         assert.are_equal(1, actual.directionFaced.x)
         assert.are_equal(0, actual.directionFaced.y)
+    end)
+
+    it("returns an empty table if no items stored in inventory", function()
+        stub(turtle, "getItemDetail").returns(nil)
+
+        local actual = turtleUtils.createState()
+
+        assert.are_same({}, actual.inv)
+    end)
+
+    it("returns item details if items stored in inventory", function()
+        stub(turtle, "getItemDetail").returns({ name = "dirt", count = 1 })
+
+        local actual = turtleUtils.createState()
+
+        assert.are_same({ dirt = {
+            slots = {
+                [1] = 1, [2] = 1, [3] = 1, [4] = 1,
+                [5] = 1, [6] = 1, [7] = 1, [8] = 1,
+                [9] = 1, [10] = 1, [11] = 1, [12] = 1,
+                [13] = 1, [14] = 1, [15] = 1, [16] = 1,
+            }
+        } }, actual.inv)
+    end)
+
+    it("strips minecraft suffix from item details", function()
+        stub(turtle, "getItemDetail").returns({ name = "minecraft:stone", count = 1 })
+
+        local actual = turtleUtils.createState()
+
+        assert.are_same({ stone = {
+            slots = {
+                [1] = 1, [2] = 1, [3] = 1, [4] = 1,
+                [5] = 1, [6] = 1, [7] = 1, [8] = 1,
+                [9] = 1, [10] = 1, [11] = 1, [12] = 1,
+                [13] = 1, [14] = 1, [15] = 1, [16] = 1,
+            }
+        } }, actual.inv)
     end)
 end)
 

@@ -50,6 +50,10 @@ local function refuel()
     return turtle.refuel()
 end
 
+local function getItemDetail(slot, detailed)
+    return turtle.getItemDetail(slot, detailed)
+end
+
 return {
     forward = forward,
     back = back,
@@ -63,5 +67,6 @@ return {
     inspectUp = inspectUp,
     inspectDown = inspectDown,
     getFuelLevel = getFuelLevel,
-    refuel = refuel
+    refuel = refuel,
+    getItemDetail = getItemDetail
 }
