@@ -23,46 +23,22 @@ local COLLECTION_ACTIONS = {
     }
 }
 
-local function makeUTurnCollection(direction, gap)
-    return {
-        {
-            run = a.turn,
-            args = { direction = direction }
-        },
-        {
-            run = a.collection,
-            args = { times = gap, actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN }
-        },
-        {
-            run = a.turn,
-            args = { direction = direction }
-        }
-    }
-end
-
 local function dig()
     local state = t.createState()
     local collectionArgs = {
         times = 10,
         actions = {
-            {
-                run = a.collection,
-                args = {
-                    times = 10,
-                    actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
-                }
-            },
-            table.unpack(makeUTurnCollection(t.DIRECTIONS.RIGHT, 3)),
-            {
-                run = a.collection,
-                args = {
-                    times = 10,
-                    actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN
-                }
-            },
-            table.unpack(makeUTurnCollection(t.DIRECTIONS.LEFT, 3))
+            {run = "a.collection", args = {times = 10, actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN }},
+            {run = "a.turn", args = { direction = t.DIRECTIONS.RIGHT }},
+            {run = "a.collection", args = { times = 3, actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN }},
+            {run = "a.turn", args = { direction = t.DIRECTIONS.RIGHT }},
+            {run = "a.collection", args = { times = 10, actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN}},
+            {run = "a.turn", args = { direction = t.DIRECTIONS.LEFT }},
+            {run = "a.collection", args = { times = 3, actions = COLLECTION_ACTIONS.DIG_MOVE_UP_DOWN }},
+            {run = "a.turn", args = { direction = t.DIRECTIONS.LEFT }},
         }
     }
+    
     a.collection(state, collectionArgs)
 end
 
