@@ -23,6 +23,10 @@ local function assertMoveDirection(m)
     assert(m == DIRECTIONS.BACK or m == DIRECTIONS.FORWARD or m == DIRECTIONS.DOWN or m == DIRECTIONS.UP)
 end
 
+local function assertPlaceDirection(p)
+    assert(p == DIRECTIONS.FORWARD or p == DIRECTIONS.DOWN or p == DIRECTIONS.UP)
+end
+
 local ORE_BLOCKS = {
     "minecraft:diamond_ore",
     "minecraft:redstone_ore",
@@ -223,6 +227,64 @@ local function turn(state, directionToTurn)
     end
 end
 
+local function findBlockInInv(inv, block)
+    assert(inv)
+    assert(type(inv) == "table")
+    assert(block)
+
+    if inv[block] then
+        local key, _ = next(inv[block].slots)
+        return key
+    else
+        return false
+    end
+end
+
+local function decrementInv(inv, block, slot)
+    assert(inv)
+    assert(type(inv) == "table")
+    assert(block)
+    assert(slot)
+
+    if not inv[block] then
+        return
+    else
+        if inv[block].slots[slot] > 0 then
+            inv[block].slots[slot] = inv[block].slots[slot] - 1
+        else
+            table.remove(inv[block].slots, slot)
+        end
+
+        if tableUtils.tableLength(inv[block].slots) == 0 then
+            inv[block] = nil
+        end
+    end
+end
+
+local function placeBlock(state, direction, blockToPlace)
+    assertPlaceDirection(direction)
+    assert(blockToPlace)
+
+    local slot = findBlockInInv(state.inv, blockToPlace)
+    if not slot then
+        print("could not place any of block because its not in my inv:  "..blockToPlace)
+        return false
+    end
+    t.select(slot)
+
+    if direction == DIRECTIONS.FORWARD then
+        t.place()
+    elseif direction == DIRECTIONS.UP then
+        t.placeUp()
+    elseif direction == DIRECTIONS.DOWN then
+        t.placeDown()
+    else
+        print("Error: Invalid Direction")
+    end
+
+    decrementInv(state.inv, blockToPlace, slot)
+end
+
 return {
     SLOTS = SLOTS,
     DIRECTIONS = DIRECTIONS,
@@ -232,5 +294,6 @@ return {
     move = move,
     turn = turn,
     createState = createState,
-    assertState = assertState
+    assertState = assertState,
+    placeBlock = placeBlock
 }

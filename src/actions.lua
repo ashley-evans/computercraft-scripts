@@ -45,9 +45,18 @@ local function turn(state, args)
     return turtleUtils.turn(state, args.direction)
 end
 
+local function place(state, args)
+    assert(args)
+    assert(args.direction, "place direction is required")
+    assert(args.block, "place block is required")
+
+    return turtleUtils.placeBlock(state, args.direction, args.block)
+end
+
 return {
     collection = collection,
     dig = dig,
     move = move,
-    turn = turn
+    turn = turn,
+    place = place
 }

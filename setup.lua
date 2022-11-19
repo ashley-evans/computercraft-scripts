@@ -34,6 +34,15 @@ if not written then
     return false
 end
 
+written = storeURLContent(
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/tunnel.lua",
+    "./tunnel.lua"
+)
+if not written then
+    print("An error occurred obtaining tunnel.lua from GitHub")
+    return false
+end
+
 -- Helpers
 
 written = storeURLContent(

@@ -54,6 +54,18 @@ local function getItemDetail(slot, detailed)
     return turtle.getItemDetail(slot, detailed)
 end
 
+local function place(text)
+    return turtle.place(text)
+end
+
+local function placeUp(text)
+    return turtle.placeUp(text)
+end
+
+local function placeDown(text)
+    return turtle.placeDown(text)
+end
+
 return {
     forward = forward,
     back = back,
@@ -68,5 +80,8 @@ return {
     inspectDown = inspectDown,
     getFuelLevel = getFuelLevel,
     refuel = refuel,
-    getItemDetail = getItemDetail
+    getItemDetail = getItemDetail,
+    place = place,
+    placeUp = placeUp,
+    placeDown = placeDown
 }
