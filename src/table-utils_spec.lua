@@ -14,4 +14,52 @@ describe("helpers", function ()
         assert.equal(tableUtils.tableLength({"test", {}, "bar"}), 3)
     end)
 
+    it("print table works", function ()
+        local table = {
+            {hi = "foo"}
+        }
+        local actual = tableUtils.tableToString(table)
+        assert.equal('{"1": {"hi": "foo"}}', actual)
+    end)
+
+    it("print table works", function ()
+        local table = {hi = "foo"}
+
+        local actual = tableUtils.tableToString(table)
+        assert.equal('{"hi": "foo"}', actual)
+    end)
+
+    it("print table nested", function ()
+        local table = {
+            wibble = {
+                wobble = {
+                    wibble = {
+                        wobble = {
+                            poo = "pee"
+                        }
+                    }
+                }
+            }
+        }
+
+        local actual = tableUtils.tableToString(table)
+        assert.equal( '{"wibble": {"wobble": {"wibble": {"wobble": {"poo": "pee"}}}}}', actual)
+    end)
+    it("print table stops at 5th level nesting", function ()
+        local table = {
+            wibble = {
+                wobble = {
+                    wibble = {
+                        wobble = {
+                            fifthLevel = {
+                                thisShouldBeTooDeep = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        local actual = tableUtils.tableToString(table)
+        assert.equal( '{"wibble": {"wobble": {"wibble": {"wobble": {"fifthLevel": "<table>"}}}}}', actual)
+    end)
 end)

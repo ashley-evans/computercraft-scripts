@@ -69,7 +69,9 @@ describe("action collection", function()
 
     it("throws no error if provided with valid inputs", function()
         local state = utils.createState()
-        local args = { times = 1, actions = {}}
+        local args = { times = 1, actions = {{
+            run = function() end
+        }}}
 
         assert.has_no_error(
             function() actions.collection(state, args) end
@@ -166,6 +168,29 @@ describe("action collection", function()
 
         assert.spy(args.actions[1].run).was_called_with(state, args.actions[1].args)
         assert.spy(args.actions[1].run).was_called(3)
+    end)
+
+    it("does debug", function()
+        local state = utils.createState()
+        local name = "nameOfTestFunction"
+        local test = function(_, _, debug)
+            if debug then
+                return name
+            end
+        end
+        local args = {times = 2, actions = {
+            {
+                run = test,
+                args = {}
+            }
+        }}
+        local expected = {
+            [1] = { args = { }, name = 'nameOfTestFunction' },
+            [2] = { args = { }, name = 'nameOfTestFunction' }
+        }
+        local result = actions.collection(state, args, true)
+        assert.are_same(expected, result)
+
     end)
 end)
 

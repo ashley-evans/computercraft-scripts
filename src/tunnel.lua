@@ -5,8 +5,8 @@ local c = require("collections")
 local function tunnel()
     local state = t.createState()
     local collectionArgs = {
-        times = 1,
-        actions = c.makeTunnel(10)
+        times = 10,
+        actions = c.PACKED_ICE_TUNNEL_SECTION
     }
     a.collection(state, collectionArgs)
 end

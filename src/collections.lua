@@ -8,6 +8,21 @@ local DIG_MOVE_UP_DOWN = {
     { run = a.dig, args = {direction = t.DIRECTIONS.DOWN}}
 }
 
+local DIG_U_MOVE_D = {
+    { run = a.dig, args = {direction = t.DIRECTIONS.UP}},
+    { run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true},
+}
+
+local DIG_U_MOVE_F = {
+    { run = a.dig, args = {direction = t.DIRECTIONS.UP}},
+    { run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
+}
+
+local MOVE_U = {
+    {run = a.move, args = {direction = t.DIRECTIONS.UP}, required = true},
+}
+
+
 local function uTurn(direction, gap)
     return {
         {run = a.turn, args = { direction = direction }},
@@ -25,35 +40,25 @@ local function minePattern(dimension, gap)
     }
 end
 
-local MAKE_TUNNEL = {
+local PACKED_ICE_TUNNEL_SECTION = {
     {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}, required = true},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}},
     {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}},
     {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "packed_ice"}, required = true},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "packed_ice"}},
     {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}, required = true},
-    {run = a.move, args = {direction = t.DIRECTIONS.UP}, required = true},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}},
+    {run = a.collection, args = {times = 1, actions = MOVE_U}},
     {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
     {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
-    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
-    {run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
-    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
-    {run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
-    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
-    {run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true},
+    {run = a.collection, args = {times = 2, actions = DIG_U_MOVE_F}},
+    {run = a.collection, args = {times = 1, actions = DIG_U_MOVE_D}},
     {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}}
 }
 
-local function makeTunnel(length)
-    return {
-        {run = a.collection, args = {times = length, actions = MAKE_TUNNEL}}
-    }
-end
-
 return {
     DIG_MOVE_UP_DOWN = DIG_MOVE_UP_DOWN,
+    PACKED_ICE_TUNNEL_SECTION = PACKED_ICE_TUNNEL_SECTION,
     uTurn = uTurn,
     minePattern = minePattern,
-    makeTunnel = makeTunnel
 }
