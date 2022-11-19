@@ -25,8 +25,33 @@ local function minePattern(dimension, gap)
     }
 end
 
+local MAKE_TUNNEL = {
+    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}, required = true},
+    {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}},
+    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "packed_ice"}, required = true},
+    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
+    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}, required = true},
+    {run = a.move, args = {direction = t.DIRECTIONS.UP}, required = true},
+    {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
+    {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
+    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
+    {run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
+    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
+    {run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
+    {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
+    {run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true},
+    {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}},
+}
+
+local function makeTunnel(length)
+    return {run = a.collection, args = {times = length, actions = MAKE_TUNNEL}}
+end
+
 return {
     DIG_MOVE_UP_DOWN = DIG_MOVE_UP_DOWN,
     uTurn = uTurn,
-    minePattern = minePattern
+    minePattern = minePattern,
+    makeTunnel = makeTunnel
 }

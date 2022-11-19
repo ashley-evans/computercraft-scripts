@@ -160,6 +160,10 @@ local function move(state, directionToMove)
             state.position.y = state.position.y - currentDirection.y
             table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y})
         end
+    elseif directionToMove == DIRECTIONS.UP then
+        moved = t.up()
+    elseif directionToMove == DIRECTIONS.DOWN then
+        moved = t.down()
     else
         print("unexpected direction for movement: " .. directionToMove)
     end
