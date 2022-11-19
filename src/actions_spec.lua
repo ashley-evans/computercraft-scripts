@@ -173,9 +173,9 @@ describe("action collection", function()
     it("does debug", function()
         local state = utils.createState()
         local name = "nameOfTestFunction"
-        local test = function(_, _, debug)
+        local test = function(_, _, debug, _)
             if debug then
-                return name
+                return name, "wibble"
             end
         end
         local args = {times = 2, actions = {
@@ -189,8 +189,29 @@ describe("action collection", function()
             [2] = { args = { }, name = 'nameOfTestFunction' }
         }
         local result = actions.collection(state, args, true)
-        assert.are_same(expected, result)
+        assert.are_same(expected, result.actions)
+    end)
 
+    it("adds consumption to debug output", function()
+        local state = utils.createState()
+        local name = "nameOfTestFunction"
+        local test = function(_, _, debug)
+            if debug then
+                return name, "dirt"
+            end
+        end
+        local args = {times = 2, actions = {
+            {
+                run = actions.collection,
+                args = { times = 5, actions = {{
+                    run = test,
+                    args = {}
+                }}}
+            }
+        }}
+        local expected = { dirt = 10 }
+        local result = actions.collection(state, args, true)
+        assert.are_same(expected, result.summary)
     end)
 end)
 

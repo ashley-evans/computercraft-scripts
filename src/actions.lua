@@ -12,11 +12,16 @@ end
 
 local function debugCollectionAction(state, action, debugState)
     assert(action)
-    local nameOrTable = action.run(state, action.args, true)
-    if type(nameOrTable) == "table" then
-        table.insert(debugState, nameOrTable)
-    else
-        table.insert(debugState, {name = nameOrTable , args = action.args})
+    local nameOrTable, consumes = action.run(state, action.args, true, debugState)
+    if type(nameOrTable) ~= "table" then
+        if debugState.summary[consumes] then
+            debugState.summary[consumes] = debugState.summary[consumes] + 1
+        else
+            debugState.summary[consumes] = 1
+        end
+
+        --switch on name and recored resource use for that. e.g. fuel for move + blocks for placeBlock
+        table.insert(debugState.actions, {name = nameOrTable, args = action.args})
     end
 end
 
@@ -30,7 +35,7 @@ local function collection(state, args, debug, debugState)
     assert(type(args.actions[1]) == "table", "actions should be a table of action tables")
 
     if debugState == nil then
-        debugState = {}
+        debugState = { summary = {}, actions = {}}
     end
 
     local actionCount = tableUtils.tableLength(args.actions)
@@ -57,7 +62,7 @@ end
 
 
 
-local function dig(_, args, debug)
+local function dig(_, args, debug, _debugState)
     if debug then
         return "dig"
     end
@@ -66,16 +71,16 @@ local function dig(_, args, debug)
     return turtleUtils.digIfSafe(args.direction, args.excluded)
 end
 
-local function move(state, args, debug)
+local function move(state, args, debug, _debugState)
     if debug then
-        return "move"
+        return "move", "fuel"
     end
     assert(args)
     assert(args.direction, "move direction is requried")
     return turtleUtils.move(state, args.direction)
 end
 
-local function turn(state, args, debug)
+local function turn(state, args, debug, _debugState)
     if debug then
         return "turn"
     end
@@ -84,9 +89,9 @@ local function turn(state, args, debug)
     return turtleUtils.turn(state, args.direction)
 end
 
-local function place(state, args, debug)
+local function place(state, args, debug, _debugState)
     if debug then
-        return "place"
+        return "place", args.block
     end
     assert(args)
     assert(args.direction, "place direction is required")
