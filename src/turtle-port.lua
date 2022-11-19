@@ -6,6 +6,14 @@ local function back()
     return turtle.back()
 end
 
+local function up()
+    return turtle.up()
+end
+
+local function down()
+    return turtle.down()
+end
+
 local function turnLeft()
     return turtle.turnLeft()
 end
@@ -69,6 +77,8 @@ end
 return {
     forward = forward,
     back = back,
+    up = up,
+    down = down,
     turnLeft = turnLeft,
     turnRight = turnRight,
     select = select,

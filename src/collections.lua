@@ -21,7 +21,7 @@ local function minePattern(dimension, gap)
         {run = a.collection, args = { times = dimension, actions = DIG_MOVE_UP_DOWN}},
         {run = a.collection, args = { times = 1, actions = uTurn(t.DIRECTIONS.RIGHT, gap)}},
         {run = a.collection, args = { times = dimension, actions = DIG_MOVE_UP_DOWN}},
-        {run = a.collection, args = { times = 1, actions = uTurn(t.DIRECTIONS.LEFT, gap)}},
+        {run = a.collection, args = { times = 1, actions = uTurn(t.DIRECTIONS.LEFT, gap)}}
     }
 end
 
@@ -42,11 +42,13 @@ local MAKE_TUNNEL = {
     {run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
     {run = a.dig, args = {direction = t.DIRECTIONS.UP}},
     {run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true},
-    {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}},
+    {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}}
 }
 
 local function makeTunnel(length)
-    return {run = a.collection, args = {times = length, actions = MAKE_TUNNEL}}
+    return {
+        {run = a.collection, args = {times = length, actions = MAKE_TUNNEL}}
+    }
 end
 
 return {
