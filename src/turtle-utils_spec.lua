@@ -334,3 +334,70 @@ describe("digIfSafe |", function()
         assert(not succeeded)
     end)
 end)
+
+describe("place block |", function()
+    it("places given block in front of turtle", function()
+        local expectedBlock = "dirt"
+        stub(turtle, "select")
+        stub(turtle, "place")
+        stub(turtle, "getItemDetail").returns({ name = expectedBlock, count = 5})
+        local state = turtleUtils.createState()
+
+        turtleUtils.placeBlock(state, turtleUtils.DIRECTIONS.FORWARD, expectedBlock)
+
+        assert.stub(turtle.place).was_called()
+        assert.are_equal(4, state.inv[expectedBlock].slots[1])
+    end)
+
+    it("places given block above the turtle", function()
+        local expectedBlock = "dirt"
+        stub(turtle, "select")
+        stub(turtle, "placeUp")
+        stub(turtle, "getItemDetail").returns({ name = expectedBlock, count = 5})
+        local state = turtleUtils.createState()
+
+        turtleUtils.placeBlock(state, turtleUtils.DIRECTIONS.UP, expectedBlock)
+
+        assert.stub(turtle.placeUp).was_called()
+        assert.are_equal(4, state.inv[expectedBlock].slots[1])
+    end)
+
+    it("places given block below the turtle", function()
+        local expectedBlock = "dirt"
+        stub(turtle, "select")
+        stub(turtle, "placeDown")
+        stub(turtle, "getItemDetail").returns({ name = expectedBlock, count = 5})
+        local state = turtleUtils.createState()
+
+        turtleUtils.placeBlock(state, turtleUtils.DIRECTIONS.DOWN, expectedBlock)
+
+        assert.stub(turtle.placeDown).was_called()
+        assert.are_equal(4, state.inv[expectedBlock].slots[1])
+    end)
+
+    it("decrements the inv and removes the slot if empty", function()
+        local expectedBlock = "dirt"
+        stub(turtle, "select")
+        stub(turtle, "placeDown")
+        stub(turtle, "getItemDetail").returns({ name = expectedBlock, count = 1})
+        local state = turtleUtils.createState()
+
+        turtleUtils.placeBlock(state, turtleUtils.DIRECTIONS.DOWN, expectedBlock)
+
+        assert.are_equal(nil, state.inv[expectedBlock].slots[1])
+    end)
+
+    it("removes the item if all slots are empty", function()
+        local expectedBlock = "dirt"
+        stub(turtle, "select")
+        stub(turtle, "placeDown")
+        stub(turtle, "getItemDetail").returns({ name = expectedBlock, count = 1})
+        local state = turtleUtils.createState()
+
+        for _ = 1, 16 do
+            turtleUtils.placeBlock(state, turtleUtils.DIRECTIONS.DOWN, expectedBlock)
+        end
+
+        assert.are_equal(nil, state.inv[expectedBlock])
+    end)
+end)

@@ -251,11 +251,20 @@ local function decrementInv(inv, block, slot)
     else
         if inv[block].slots[slot] > 0 then
             inv[block].slots[slot] = inv[block].slots[slot] - 1
-        else
-            table.remove(inv[block].slots, slot)
         end
 
-        if tableUtils.tableLength(inv[block].slots) == 0 then
+        if inv[block].slots[slot] == 0 then
+            inv[block].slots[slot] = nil
+        end
+
+        local allNils = true
+        for _, v in pairs(inv[block].slots) do
+            if v ~= nil then
+                allNils = false
+            end
+        end
+
+        if allNils then
             inv[block] = nil
         end
     end
