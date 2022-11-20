@@ -8,21 +8,6 @@ local DIG_MOVE_UP_DOWN = {
     { run = a.dig, args = {direction = t.DIRECTIONS.DOWN}}
 }
 
-local DIG_U_MOVE_D = {
-    { run = a.dig, args = {direction = t.DIRECTIONS.UP}},
-    { run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true},
-}
-
-local DIG_U_MOVE_F = {
-    { run = a.dig, args = {direction = t.DIRECTIONS.UP}},
-    { run = a.move, args = {direction = t.DIRECTIONS.FORWARD}, required = true},
-}
-
-local MOVE_U = {
-    {run = a.move, args = {direction = t.DIRECTIONS.UP}, required = true},
-}
-
-
 local function uTurn(direction, gap)
     return {
         {run = a.turn, args = { direction = direction }},
@@ -40,19 +25,41 @@ local function minePattern(dimension, gap)
     }
 end
 
+local function digPlace(direction, blockToPlace)
+    return {
+        {run = a.dig, args = {direction = direction, excluded = {}}},
+        {run = a.place, args = {direction = direction, block = blockToPlace}},
+    }
+end
+
+local function digMove(direction)
+    return {
+        {run = a.dig, args = {direction = direction, excluded = {}}},
+        {run = a.move, args = {direction = t.DIRECTIONS.DOWN}, required = true}
+    }
+end
+
 local PACKED_ICE_TUNNEL_SECTION = {
-    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "deepslate_brick_slab")}},
     {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}},
-    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "packed_ice"}},
-    {run = a.collection, args = {times = 1, actions = DIG_MOVE_UP_DOWN}},
-    {run = a.place, args = {direction = t.DIRECTIONS.DOWN, block = "deepslate_brick_slab"}},
-    {run = a.collection, args = {times = 1, actions = MOVE_U}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "packed_ice")}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "deepslate_brick_slab")}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_brick")}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_brick")}},
     {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
     {run = a.turn, args = {direction = t.DIRECTIONS.LEFT}},
-    {run = a.collection, args = {times = 2, actions = DIG_U_MOVE_F}},
-    {run = a.collection, args = {times = 1, actions = DIG_U_MOVE_D}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_brick")}},
+    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.DOWN)}},
+    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_brick")}},
     {run = a.turn, args = {direction = t.DIRECTIONS.RIGHT}}
 }
 
