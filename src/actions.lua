@@ -1,5 +1,6 @@
 local tableUtils = require("table-utils")
 local turtleUtils = require("turtle-utils")
+local turtle = require("turtle-port")
 local logger = require("logger")
 
 local DEBUG_SUMMARY_FUEL_KEY = "fuel"
@@ -68,23 +69,6 @@ end
 
 local function checkCollectionCanBeCompleted(state)
     local result = {success = true, failures = {}}
-    for blockName, amountNeeded in pairs(state.debug.summary) do
-        if state.inv[blockName] then
-            if state.inv[blockName].total < amountNeeded then
-                result.success  = false
-                table.insert(
-                    result.failures,
-                    { block  = blockName, available = state.inv[blockName].total, needed =  amountNeeded }
-                )
-            end
-        else
-            result.success  = false
-                table.insert(
-                    result.failures,
-                    { block  = blockName, available = 0, needed =  amountNeeded}
-                )
-        end
-    end
     local requiredFuel = state.debug.summary[DEBUG_SUMMARY_FUEL_KEY]
     if requiredFuel then
         local currentFuel = turtle.getFuelLevel()
@@ -92,10 +76,30 @@ local function checkCollectionCanBeCompleted(state)
             result.success = false
             table.insert(
                     result.failures,
-                    { block  = DEBUG_SUMMARY_FUEL_KEY, available = currentFuel, needed =  requiredFuel}
+                    { block = DEBUG_SUMMARY_FUEL_KEY, available = currentFuel, needed = requiredFuel}
                 )
         end
     end
+
+    state.debug.summary[DEBUG_SUMMARY_FUEL_KEY] = nil
+    for blockName, amountNeeded in pairs(state.debug.summary) do
+        if state.inv[blockName] then
+            if state.inv[blockName].total < amountNeeded then
+                result.success  = false
+                table.insert(
+                    result.failures,
+                    { block = blockName, available = state.inv[blockName].total, needed = amountNeeded }
+                )
+            end
+        else
+            result.success  = false
+                table.insert(
+                    result.failures,
+                    { block = blockName, available = 0, needed = amountNeeded}
+                )
+        end
+    end
+
     return result
 end
 
@@ -105,9 +109,9 @@ local function safeCollection(state, args)
     if result.success then
         collection(state, args)
     else
-        local msg = "not enough resources to compelete task...\n"
+        local msg = "Not enough resources to complete task:\n"
         for _, failure in pairs(result.failures) do
-            msg = msg .. 'block: '..failure.block..
+            msg = msg .. '\nRequired: '..failure.block..
             ', needed: '..failure.needed..
             ', available: '..failure.available
         end

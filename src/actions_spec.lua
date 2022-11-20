@@ -240,7 +240,7 @@ describe("action collection", function()
 
     it("safeCollection checks task can be completed before actioning", function()
         local state = utils.createState()
-        local printSpy = stub(logger, "debug")
+        local printStub = stub(logger, "debug")
         local collectionArgs = {
             times = 2,
             actions = {
@@ -249,8 +249,64 @@ describe("action collection", function()
         }
 
         actions.safeCollection(state, collectionArgs)
-        assert.spy(printSpy).was_called_with(
-            'not enough resources to compelete task...\n{block: dirt, needed: 2, available: 0}'
+        assert.stub(printStub).was_called_with(
+            "Not enough resources to complete task:\n" ..
+            "\nRequired: dirt, needed: 2, available: 0"
+        )
+    end)
+
+    it("safeCollection prints fuel requirement if not enough to action", function()
+        local state = utils.createState()
+        local printStub = stub(logger, "debug")
+        local collectionArgs = {
+            times = 2,
+            actions = {
+                {run = actions.move, args = {direction = turtleUtils.DIRECTIONS.FORWARD}}
+            }
+        }
+        stub(turtle, "getFuelLevel").returns(1)
+
+        actions.safeCollection(state, collectionArgs)
+        assert.stub(printStub).was_called_with(
+            "Not enough resources to complete task:\n" ..
+            "\nRequired: fuel, needed: 2, available: 1"
+        )
+    end)
+
+    it("safeCollection does not print fuel requirement if enough to action", function()
+        local state = utils.createState()
+        stub(turtle, "forward")
+        local printStub = stub(logger, "debug")
+        local collectionArgs = {
+            times = 2,
+            actions = {
+                {run = actions.move, args = {direction = turtleUtils.DIRECTIONS.FORWARD}}
+            }
+        }
+        stub(turtle, "getFuelLevel").returns(3)
+
+        actions.safeCollection(state, collectionArgs)
+        assert.stub(printStub).was_not_called()
+    end)
+
+    it("safeCollection prints both fuel and block requirements if necessary", function()
+        local state = utils.createState()
+        stub(turtle, "forward")
+        local printStub = stub(logger, "debug")
+        local collectionArgs = {
+            times = 2,
+            actions = {
+                {run = actions.move, args = {direction = turtleUtils.DIRECTIONS.FORWARD}},
+                {run = actions.place, args = {directon = turtleUtils.DIRECTIONS.FORWARD, block = "minecraft:dirt"}}
+            }
+        }
+        stub(turtle, "getFuelLevel").returns(1)
+
+        actions.safeCollection(state, collectionArgs)
+        assert.stub(printStub).was_called_with(
+            "Not enough resources to complete task:\n" ..
+            "\nRequired: fuel, needed: 2, available: 1" ..
+            "\nRequired: dirt, needed: 2, available: 0"
         )
     end)
 end)
