@@ -69,21 +69,17 @@ end
 
 local function checkCollectionCanBeCompleted(state)
     local result = {success = true, failures = {}}
-    local requiredFuel = state.debug.summary[DEBUG_SUMMARY_FUEL_KEY]
-    if requiredFuel then
-        local currentFuel = turtle.getFuelLevel()
-        if currentFuel < requiredFuel then
-            result.success = false
-            table.insert(
-                    result.failures,
-                    { block = DEBUG_SUMMARY_FUEL_KEY, available = currentFuel, needed = requiredFuel}
-                )
-        end
-    end
-
-    state.debug.summary[DEBUG_SUMMARY_FUEL_KEY] = nil
     for blockName, amountNeeded in pairs(state.debug.summary) do
-        if state.inv[blockName] then
+        if blockName == DEBUG_SUMMARY_FUEL_KEY then
+            local currentFuel = turtle.getFuelLevel()
+            if currentFuel < amountNeeded then
+                result.success = false
+                table.insert(
+                        result.failures,
+                        { block = DEBUG_SUMMARY_FUEL_KEY, available = currentFuel, needed = amountNeeded}
+                    )
+            end
+        elseif state.inv[blockName] then
             if state.inv[blockName].total < amountNeeded then
                 result.success  = false
                 table.insert(

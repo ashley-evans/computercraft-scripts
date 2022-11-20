@@ -305,8 +305,8 @@ describe("action collection", function()
         actions.safeCollection(state, collectionArgs)
         assert.stub(printStub).was_called_with(
             "Not enough resources to complete task:\n" ..
-            "\nRequired: fuel, needed: 2, available: 1" ..
-            "\nRequired: dirt, needed: 2, available: 0"
+            "\nRequired: dirt, needed: 2, available: 0" ..
+            "\nRequired: fuel, needed: 2, available: 1"
         )
     end)
 end)
