@@ -79,7 +79,8 @@ local function createState()
                 y = 0
             },
             moveHistory = {{x=0, y=0}} -- array of x y coordinates, e.g. {{x:0,y:0}, {x:1, y:0}}
-        }
+        },
+        iteration = 1,
     }
 end
 

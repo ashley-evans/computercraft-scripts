@@ -133,6 +133,20 @@ local fullIceTunnelSection = {
     {run = a.collection, args = {times = 2, actions = digMove(t.DIRECTIONS.DOWN)}},
     {run = a.collection, args = {times = 1, actions = move(t.DIRECTIONS.BACK)}},
     {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.DOWN)}},
+    {run = a.doOnIteration, args = {index = 8, collectionArgs = {
+        times = 1, actions = {
+            {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+            {run = a.collection, args = {times = 1, actions = move(t.DIRECTIONS.FORWARD)}},
+            {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "torch")}},
+            {run = a.collection, args = {times = 1, actions = move(t.DIRECTIONS.BACK)}},
+            {run = a.collection, args = {times = 1, actions = move(t.DIRECTIONS.DOWN)}},
+            {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "torch")}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.LEFT)}},
+
+        }
+    }}},
+    {run = a.incrementIteration, args = {}},
 }
 
 return {

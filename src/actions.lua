@@ -102,6 +102,7 @@ end
 local function safeCollection(state, args)
     collection(state, args, true)
     local result = checkCollectionCanBeCompleted(state)
+    state.iteration = 1
     if result.success then
         collection(state, args)
     else
@@ -155,7 +156,30 @@ local function place(state, args, debug)
     return turtleUtils.placeBlock(state, args.direction, args.block)
 end
 
+local function incrementIteration(state, _args, debug)
+    state.iteration = state.iteration + 1
+    if debug then
+        return "incrementIteration"
+    end
+end
+
+local function doOnIteration(state, args, debug)
+    assert(args)
+    assert(args.index, "iteration index is requried")
+    assert(args.collectionArgs, "collection to perform is required")
+    if state.iteration % args.index == 0 then
+        return collection(state, args.collectionArgs, debug)
+    end
+    if debug then
+        return "doIteration - skip"
+    else
+        return true
+    end
+end
+
 return {
+    doOnIteration = doOnIteration,
+    incrementIteration = incrementIteration,
     safeCollection = safeCollection,
     collection = collection,
     dig = dig,
