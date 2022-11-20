@@ -18,10 +18,12 @@ local function debugCollectionAction(state, action)
     local debugState = state.debug
     local nameOrTable, consumes = action.run(state, action.args, true)
     if type(nameOrTable) ~= "table" then
-        if debugState.summary[consumes] then
-            debugState.summary[consumes] = debugState.summary[consumes] + 1
-        else
-            debugState.summary[consumes] = 1
+        if consumes then
+            if debugState.summary[consumes] then
+                debugState.summary[consumes] = debugState.summary[consumes] + 1
+            else
+                debugState.summary[consumes] = 1
+            end
         end
 
         --switch on name and recored resource use for that. e.g. fuel for move + blocks for placeBlock
@@ -105,9 +107,9 @@ local function safeCollection(state, args)
     else
         local msg = "not enough resources to compelete task...\n"
         for _, failure in pairs(result.failures) do
-            msg = msg .. '{block: '..failure.block..
+            msg = msg .. 'block: '..failure.block..
             ', needed: '..failure.needed..
-            ', available: '..failure.available..'}'
+            ', available: '..failure.available
         end
         logger.debug(msg)
     end

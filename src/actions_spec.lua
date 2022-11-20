@@ -216,6 +216,28 @@ describe("action collection", function()
         assert.are_same(expected, state.debug.summary)
     end)
 
+    it("does not add consumption to debug output if actions do not consume", function()
+        local state = utils.createState()
+        local name = "nameOfTestFunction"
+        local test = function(_, _, debug)
+            if debug then
+                return name
+            end
+        end
+        local args = {times = 2, actions = {
+            {
+                run = actions.collection,
+                args = { times = 5, actions = {{
+                    run = test,
+                    args = {}
+                }}}
+            }
+        }}
+        local expected = {}
+        actions.collection(state, args, true)
+        assert.are_same(expected, state.debug.summary)
+    end)
+
     it("safeCollection checks task can be completed before actioning", function()
         local state = utils.createState()
         local printSpy = stub(logger, "debug")
