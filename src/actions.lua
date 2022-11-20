@@ -10,9 +10,10 @@ local function doCollectionAction(state, action, allRequirementsMet)
     end
 end
 
-local function debugCollectionAction(state, action, debugState)
+local function debugCollectionAction(state, action)
     assert(action)
-    local nameOrTable, consumes = action.run(state, action.args, true, debugState)
+    local debugState = state.debug
+    local nameOrTable, consumes = action.run(state, action.args, true)
     if type(nameOrTable) ~= "table" then
         if debugState.summary[consumes] then
             debugState.summary[consumes] = debugState.summary[consumes] + 1
@@ -25,7 +26,7 @@ local function debugCollectionAction(state, action, debugState)
     end
 end
 
-local function collection(state, args, debug, debugState)
+local function collection(state, args, debug)
     turtleUtils.assertState(state)
     assert(type(args) == "table", "Arguments must be a table")
     assert(args.times, "Must provide the number of times to execute collection")
@@ -34,10 +35,6 @@ local function collection(state, args, debug, debugState)
     assert(type(args.actions) == "table", "Actions must be a table")
     assert(type(args.actions[1]) == "table", "actions should be a table of action tables")
 
-    if debugState == nil then
-        debugState = { summary = {}, actions = {}}
-    end
-
     local actionCount = tableUtils.tableLength(args.actions)
     local i = 1
     while i <= args.times do
@@ -45,7 +42,7 @@ local function collection(state, args, debug, debugState)
         for a = 1, actionCount do
             local currentAction = args.actions[a]
             if debug then
-                debugCollectionAction(state, currentAction, debugState)
+                debugCollectionAction(state, currentAction)
             else
                 allRequirementsMet = doCollectionAction(state, currentAction, allRequirementsMet)
             end
@@ -56,13 +53,13 @@ local function collection(state, args, debug, debugState)
         end
     end
     if debug then
-        return debugState
+        return {} -- this just distinguishes this action as being special, all other actions return strings in debug    
     end
 end
 
 
 
-local function dig(_, args, debug, _debugState)
+local function dig(_, args, debug)
     if debug then
         return "dig"
     end
@@ -71,7 +68,7 @@ local function dig(_, args, debug, _debugState)
     return turtleUtils.digIfSafe(args.direction, args.excluded)
 end
 
-local function move(state, args, debug, _debugState)
+local function move(state, args, debug)
     if debug then
         return "move", "fuel"
     end
@@ -80,7 +77,7 @@ local function move(state, args, debug, _debugState)
     return turtleUtils.move(state, args.direction)
 end
 
-local function turn(state, args, debug, _debugState)
+local function turn(state, args, debug)
     if debug then
         return "turn"
     end
@@ -89,7 +86,7 @@ local function turn(state, args, debug, _debugState)
     return turtleUtils.turn(state, args.direction)
 end
 
-local function place(state, args, debug, _debugState)
+local function place(state, args, debug)
     if debug then
         return "place", args.block
     end

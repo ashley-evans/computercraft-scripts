@@ -65,6 +65,10 @@ end
 local function createState()
     local inv = takeStock()
     return {
+        debug = {
+            summary = {},
+            actions = {}
+        },
         inv = inv,
         position = {
             x = 0,

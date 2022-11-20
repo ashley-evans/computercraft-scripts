@@ -188,8 +188,8 @@ describe("action collection", function()
             [1] = { args = { }, name = 'nameOfTestFunction' },
             [2] = { args = { }, name = 'nameOfTestFunction' }
         }
-        local result = actions.collection(state, args, true)
-        assert.are_same(expected, result.actions)
+        actions.collection(state, args, true)
+        assert.are_same(expected, state.debug.actions)
     end)
 
     it("adds consumption to debug output", function()
@@ -210,8 +210,8 @@ describe("action collection", function()
             }
         }}
         local expected = { dirt = 10 }
-        local result = actions.collection(state, args, true)
-        assert.are_same(expected, result.summary)
+        actions.collection(state, args, true)
+        assert.are_same(expected, state.debug.summary)
     end)
 end)
 
