@@ -4,6 +4,8 @@ local actions = require("actions")
 local turtle = require("turtle-port")
 local utils = require("turtle-utils")
 local match = require("luassert.match")
+local turtleUtils = require("turtle-utils")
+local logger = require("logger")
 
 stub(turtle, "getItemDetail")
 
@@ -212,6 +214,22 @@ describe("action collection", function()
         local expected = { dirt = 10 }
         actions.collection(state, args, true)
         assert.are_same(expected, state.debug.summary)
+    end)
+
+    it("safeCollection checks task can be completed before actioning", function()
+        local state = utils.createState()
+        local printSpy = stub(logger, "debug")
+        local collectionArgs = {
+            times = 2,
+            actions = {
+                {run = actions.place, args = {directon = turtleUtils.DIRECTIONS.FORWARD, block = "dirt"}}
+            }
+        }
+
+        actions.safeCollection(state, collectionArgs)
+        assert.spy(printSpy).was_called_with(
+            'not enough resources to compelete task...\n{block: dirt, needed: 2, available: 0}'
+        )
     end)
 end)
 

@@ -1,5 +1,8 @@
 local tableUtils = require("table-utils")
 local turtleUtils = require("turtle-utils")
+local logger = require("logger")
+
+local DEBUG_SUMMARY_FUEL_KEY = "fuel"
 
 local function doCollectionAction(state, action, allRequirementsMet)
     local success = action.run(state, action.args)
@@ -53,7 +56,60 @@ local function collection(state, args, debug)
         end
     end
     if debug then
-        return {} -- this just distinguishes this action as being special, all other actions return strings in debug    
+        -- this just distinguishes this action as being special,
+        -- all other actions return strings in debug. the fact this is a table
+        -- is important
+        return {}
+    end
+end
+
+
+local function checkCollectionCanBeCompleted(state)
+    local result = {success = true, failures = {}}
+    for blockName, amountNeeded in pairs(state.debug.summary) do
+        if state.inv[blockName] then
+            if state.inv[blockName].total < amountNeeded then
+                result.success  = false
+                table.insert(
+                    result.failures,
+                    { block  = blockName, available = state.inv[blockName].total, needed =  amountNeeded }
+                )
+            end
+        else
+            result.success  = false
+                table.insert(
+                    result.failures,
+                    { block  = blockName, available = 0, needed =  amountNeeded}
+                )
+        end
+    end
+    local requiredFuel = state.debug.summary[DEBUG_SUMMARY_FUEL_KEY]
+    if requiredFuel then
+        local currentFuel = turtle.getFuelLevel()
+        if currentFuel < requiredFuel then
+            result.success = false
+            table.insert(
+                    result.failures,
+                    { block  = DEBUG_SUMMARY_FUEL_KEY, available = currentFuel, needed =  requiredFuel}
+                )
+        end
+    end
+    return result
+end
+
+local function safeCollection(state, args)
+    collection(state, args, true)
+    local result = checkCollectionCanBeCompleted(state)
+    if result.success then
+        collection(state, args)
+    else
+        local msg = "not enough resources to compelete task...\n"
+        for _, failure in pairs(result.failures) do
+            msg = msg .. '{block: '..failure.block..
+            ', needed: '..failure.needed..
+            ', available: '..failure.available..'}'
+        end
+        logger.debug(msg)
     end
 end
 
@@ -70,7 +126,7 @@ end
 
 local function move(state, args, debug)
     if debug then
-        return "move", "fuel"
+        return "move", DEBUG_SUMMARY_FUEL_KEY
     end
     assert(args)
     assert(args.direction, "move direction is requried")
@@ -98,6 +154,7 @@ local function place(state, args, debug)
 end
 
 return {
+    safeCollection = safeCollection,
     collection = collection,
     dig = dig,
     move = move,

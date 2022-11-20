@@ -31,9 +31,9 @@ local function stringify(table, depth)
         else
             s = s.."\""..tostring(v).."\""
         end
-        s=s..","
+        s=s..", "
     end
-    s = s:sub(1, -2)
+    s = s:sub(1, -3)
     s = s.."}"
     return s
 end

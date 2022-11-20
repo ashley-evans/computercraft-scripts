@@ -54,8 +54,9 @@ local function takeStock()
             local name = string.gsub(details.name, "minecraft:", "")
             if stock[name] then
                 stock[name].slots[i] = details.count
+                stock[name].total  = stock[name].total + details.count
             else
-                stock[name] = { slots = { [i] = details.count} }
+                stock[name] = { slots = { [i] = details.count}, total = details.count }
             end
         end
     end
@@ -90,6 +91,9 @@ local function assertState(s)
     assert(s.position.directionFaced.x)
     assert(s.position.directionFaced.y)
     assert(s.position.moveHistory)
+    assert(s.debug)
+    assert(s.debug.summary)
+    assert(s.debug.actions)
 
     assert(type(s.position.x) == "number")
     assert(type(s.position.y) == "number")
@@ -259,6 +263,7 @@ local function decrementInv(inv, block, slot)
     else
         if inv[block].slots[slot] > 0 then
             inv[block].slots[slot] = inv[block].slots[slot] - 1
+            inv[block].total = inv[block].total - 1
         end
 
         if inv[block].slots[slot] == 0 then
