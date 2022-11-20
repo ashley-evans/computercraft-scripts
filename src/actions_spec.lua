@@ -222,7 +222,7 @@ describe("action collection", function()
         local collectionArgs = {
             times = 2,
             actions = {
-                {run = actions.place, args = {directon = turtleUtils.DIRECTIONS.FORWARD, block = "dirt"}}
+                {run = actions.place, args = {directon = turtleUtils.DIRECTIONS.FORWARD, block = "minecraft:dirt"}}
             }
         }
 

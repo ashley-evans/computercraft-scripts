@@ -144,7 +144,7 @@ end
 
 local function place(state, args, debug)
     if debug then
-        return "place", args.block
+        return "place", string.gsub(args.block, "minecraft:", "")
     end
     assert(args)
     assert(args.direction, "place direction is required")
