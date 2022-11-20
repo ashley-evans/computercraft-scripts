@@ -8,7 +8,7 @@ local function dig()
         times = 10,
         actions = c.minePattern(10, 2)
     }
-    a.collection(state, collectionArgs)
+    a.safeCollection(state, collectionArgs)
 end
 
 dig()

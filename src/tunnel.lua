@@ -8,7 +8,7 @@ local function tunnel()
         times = 10,
         actions = c.PACKED_ICE_TUNNEL_SECTION
     }
-    a.collection(state, collectionArgs)
+    a.safeCollection(state, collectionArgs)
 end
 
 tunnel()
