@@ -106,14 +106,7 @@ local function safeCollection(state, args)
         collection(state, args)
     else
         local msg = "Not enough resources to complete task:\n"
-        -- loop through table in order. so gross.
-        local orderedKeys = {}
-        for k in pairs(result.failures) do
-            table.insert(orderedKeys, k)
-        end
-        table.sort(orderedKeys)
-        for i = 1, #orderedKeys do
-            local failure = result.failures[ orderedKeys[i] ]
+        for _, failure in pairs(result.failures) do
             msg = msg .. '\nRequired: '..failure.block..
             ', needed: '..failure.needed..
             ', available: '..failure.available

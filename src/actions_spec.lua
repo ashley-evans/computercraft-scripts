@@ -9,6 +9,16 @@ local logger = require("logger")
 
 stub(turtle, "getItemDetail")
 
+local function contains(_, arguments)
+    local expected = arguments[1]
+    return function(value)
+        local found = string.find(value, expected)
+        return found ~= nil
+    end
+end
+
+assert:register("matcher", "contains", contains)
+
 describe("action collection", function()
     it("throws an error if not provided a valid state", function()
         local state = "wibble"
@@ -303,11 +313,8 @@ describe("action collection", function()
         stub(turtle, "getFuelLevel").returns(1)
 
         actions.safeCollection(state, collectionArgs)
-        assert.stub(printStub).was_called_with(
-            "Not enough resources to complete task:\n" ..
-            "\nRequired: dirt, needed: 2, available: 0" ..
-            "\nRequired: fuel, needed: 2, available: 1"
-        )
+        assert.stub(printStub).was_called_with(match.contains("Required: dirt, needed: 2, available: 0"))
+        assert.stub(printStub).was_called_with(match.contains("Required: fuel, needed: 2, available: 1"))
     end)
 end)
 
