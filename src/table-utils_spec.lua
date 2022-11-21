@@ -62,4 +62,14 @@ describe("helpers", function ()
         local actual = tableUtils.tableToString(table)
         assert.equal( '{"wibble": {"wobble": {"wibble": {"wobble": {"fifthLevel": "<table>"}}}}}', actual)
     end)
+
+    it("deals with empty tables correctly", function ()
+        local table = {
+            wibble = {
+                wobble = {},
+            }
+        }
+        local actual = tableUtils.tableToString(table)
+        assert.equal( '{"wibble": {"wobble": {}}}', actual)
+    end)
 end)

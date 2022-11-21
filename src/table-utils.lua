@@ -23,6 +23,7 @@ local function stringify(table, depth)
     end
     local s = ""
     s = s.."{"
+    local count = 0
     for k, v in pairs(table) do
         s = s.."\""..k.."\""..": "
         local type = type(v)
@@ -32,8 +33,11 @@ local function stringify(table, depth)
             s = s.."\""..tostring(v).."\""
         end
         s=s..", "
+        count = count + 1
     end
-    s = s:sub(1, -3)
+    if count > 0 then
+        s = s:sub(1, -3)
+    end
     s = s.."}"
     return s
 end

@@ -54,28 +54,61 @@ local function turn(direction)
         {run = a.turn, args = {direction = direction}},
     }
 end
-local PACKED_ICE_TUNNEL_SECTION = {
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "deepslate_brick_slab")}},
-    {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "packed_ice")}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, "deepslate_brick_slab")}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_bricks")}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_bricks")}},
-    {run = a.collection, args = {times = 2, actions = turn(t.DIRECTIONS.LEFT)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.UP, "deepslate_brick_slab")}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_bricks")}},
-    {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.DOWN)}},
-    {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.FORWARD, "deepslate_bricks")}},
-    {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-}
+
+local function wallSection(height, block)
+    return {
+        {run = a.collection, args = {times = height, actions = {
+            {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
+            {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, block)}},
+        }}},
+        {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+        {run = a.collection, args = {times = height, actions = digMove(t.DIRECTIONS.DOWN)}},
+    }
+end
+
+local function floorSection(length, block)
+    return{
+        {run = a.collection, args = {times = length -1, actions = {
+            {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, block)}},
+            {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.FORWARD)}},
+        }}},
+        {run = a.collection, args = {times = 1, actions = digPlace(t.DIRECTIONS.DOWN, block)}},
+    }
+end
+
+local function floor(forwardLength, rightLength, block)
+    local repeatCount = math.floor(rightLength/2)
+    return {
+        {run = a.collection, args = {times = repeatCount - 1, actions = {
+            {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+            {run = a.collection, args = {times = 1, actions = uTurn(t.DIRECTIONS.RIGHT, 0)}},
+            {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+            {run = a.collection, args = {times = 1, actions = uTurn(t.DIRECTIONS.LEFT, 0)}},
+        }}},
+        {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+        {run = a.collection, args = {times = 1, actions = uTurn(t.DIRECTIONS.RIGHT, 0)}},
+        {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+    }
+end
+local function wall(length, height, block)
+    return {
+        {run = a.collection, args = {times = length, actions = wallSection(height, block)}}
+    }
+end
+
+local function box(forwardLength, rightLength, height, block)
+    return {
+        {run = a.collection, args = {times = 1, actions = floor(forwardLength, rightLength, block)}},
+        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+        {run = a.collection, args = {times = 1, actions = wall(rightLength-1, height, block)}},
+        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+        {run = a.collection, args = {times = 1, actions = wall(forwardLength-1, height, block)}},
+        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+        {run = a.collection, args = {times = 1, actions = wall(rightLength-1, height, block)}},
+        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+        {run = a.collection, args = {times = 1, actions = wall(forwardLength-1, height, block)}},
+    }
+end
 
 local fullIceTunnelSection = {
     -- base layer
@@ -133,6 +166,7 @@ local fullIceTunnelSection = {
     {run = a.collection, args = {times = 2, actions = digMove(t.DIRECTIONS.DOWN)}},
     {run = a.collection, args = {times = 1, actions = move(t.DIRECTIONS.BACK)}},
     {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.DOWN)}},
+    -- torches every so often
     {run = a.doOnIteration, args = {index = 8, collectionArgs = {
         times = 1, actions = {
             {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
@@ -150,8 +184,10 @@ local fullIceTunnelSection = {
 }
 
 return {
+    box = box,
+    floor = floor,
+    wall = wall,
     DIG_MOVE_UP_DOWN = DIG_MOVE_UP_DOWN,
-    PACKED_ICE_TUNNEL_SECTION = PACKED_ICE_TUNNEL_SECTION,
     fullIceTunnelSection = fullIceTunnelSection,
     uTurn = uTurn,
     minePattern = minePattern,
