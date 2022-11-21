@@ -101,7 +101,7 @@ end
 
 
 written = storeURLContent(
-    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/collections.lua",
+    "https://raw.githubusercontent.com/ashley-evans/computercraft-scripts/master/src/build.lua",
     "./build.lua"
 )
 if not written then
