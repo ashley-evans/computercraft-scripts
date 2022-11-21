@@ -3,7 +3,6 @@ local actions = require("actions")
 local turtle = require("turtle-port")
 local utils = require("turtle-utils")
 local collections = require("collections")
-local tableUtils = require("table-utils")
 
 describe("complex action", function()
     stub(turtle, "getFuelLevel").returns(3000)
