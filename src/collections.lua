@@ -99,14 +99,17 @@ end
 local function box(forwardLength, rightLength, height, block)
     return {
         {run = a.collection, args = {times = 1, actions = floor(forwardLength, rightLength, block)}},
-        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-        {run = a.collection, args = {times = 1, actions = wall(rightLength-1, height, block)}},
-        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-        {run = a.collection, args = {times = 1, actions = wall(forwardLength-1, height, block)}},
-        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-        {run = a.collection, args = {times = 1, actions = wall(rightLength-1, height, block)}},
-        {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
-        {run = a.collection, args = {times = 1, actions = wall(forwardLength-1, height, block)}},
+        {run = a.collection, args = {times = height, actions = {
+            {run = a.collection, args = {times = 1, actions = digMove(t.DIRECTIONS.UP)}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+            {run = a.collection, args = {times = 1, actions = floorSection(rightLength, block)}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+            {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+            {run = a.collection, args = {times = 1, actions = floorSection(rightLength, block)}},
+            {run = a.collection, args = {times = 1, actions = turn(t.DIRECTIONS.RIGHT)}},
+            {run = a.collection, args = {times = 1, actions = floorSection(forwardLength, block)}},
+        }}}
     }
 end
 

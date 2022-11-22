@@ -259,30 +259,36 @@ describe("complex movement |", function()
         stub(turtle, "turnLeft").returns(true)
         stub(turtle, "back").returns(true)
         stub(turtle, "forward").returns(true)
+        stub(turtle, "up").returns(true)
+        stub(turtle, "down").returns(true)
         local state = turtleUtils.createState()
 
         turtleUtils.move(state, turtleUtils.DIRECTIONS.FORWARD)
         turtleUtils.turn(state, turtleUtils.DIRECTIONS.RIGHT)
         turtleUtils.move(state, turtleUtils.DIRECTIONS.FORWARD)
         turtleUtils.move(state, turtleUtils.DIRECTIONS.BACK)
+        turtleUtils.move(state, turtleUtils.DIRECTIONS.UP)
         turtleUtils.turn(state, turtleUtils.DIRECTIONS.LEFT)
         turtleUtils.move(state, turtleUtils.DIRECTIONS.FORWARD)
         turtleUtils.turn(state, turtleUtils.DIRECTIONS.LEFT)
         turtleUtils.move(state, turtleUtils.DIRECTIONS.FORWARD)
         turtleUtils.turn(state, turtleUtils.DIRECTIONS.LEFT)
         turtleUtils.move(state, turtleUtils.DIRECTIONS.BACK)
+        turtleUtils.move(state, turtleUtils.DIRECTIONS.DOWN)
 
         assert.are_same({
-            x = 3, y = -1,
+            x = 3, y = -1, z=0,
             directionFaced = { x = -1, y = 0 },
             moveHistory={
-                {x=0, y=0},
-                {x=1, y=0},
-                {x=1, y=1},
-                {x=1, y=0},
-                {x=2, y=0},
-                {x=2, y=-1},
-                {x=3, y=-1}
+                {x=0, y=0, z=0},
+                {x=1, y=0, z=0},
+                {x=1, y=1, z=0},
+                {x=1, y=0, z=0},
+                {x=1, y=0, z=1},
+                {x=2, y=0, z=1},
+                {x=2, y=-1, z=1},
+                {x=3, y=-1, z=1},
+                {x=3, y=-1, z=0},
             }}, state.position)
     end)
 end)

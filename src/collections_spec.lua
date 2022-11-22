@@ -32,8 +32,8 @@ describe("complex action", function()
         local args = {times = 1, actions = collections.floor(length, width, "deepslate_bricks") }
 
         actions.collection(state, args, false)
-        assert.equal(state.inv["deepslate_bricks"].slots[1] , spareBlock)
-        assert.equal(state.inv["deepslate_bricks"].total , spareBlock)
+        assert.equal(spareBlock, state.inv["deepslate_bricks"].slots[1])
+        assert.equal(spareBlock, state.inv["deepslate_bricks"].total)
     end)
 
     it("floor rounds width down to nearest even number", function()
@@ -45,7 +45,7 @@ describe("complex action", function()
         local args = {times = 1, actions = collections.floor(length, width, "deepslate_bricks") }
 
         actions.collection(state, args, false)
-        assert.equal(state.position.y, 7)
+        assert.equal(7, state.position.y)
     end)
 
     it("floor leaves you on same x cordinate as when it started", function()
@@ -57,7 +57,7 @@ describe("complex action", function()
         local args = {times = 1, actions = collections.floor(length, width, "deepslate_bricks") }
 
         actions.collection(state, args, false)
-        assert.equal(state.position.x, 0)
+        assert.equal(0, state.position.x)
     end)
 
     it("floor leaves you facing the oposide direction than when it started", function()
@@ -69,7 +69,7 @@ describe("complex action", function()
         local args = {times = 1, actions = collections.floor(length, width, "deepslate_bricks") }
 
         actions.collection(state, args, false)
-        assert.are_same(state.position.directionFaced, {x = -1, y = 0})
+        assert.are_same({x = -1, y = 0}, state.position.directionFaced)
     end)
 
 end)

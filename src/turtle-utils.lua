@@ -74,11 +74,12 @@ local function createState()
         position = {
             x = 0,
             y = 0,
+            z = 0,
             directionFaced = {
                 x = 1,
                 y = 0
             },
-            moveHistory = {{x=0, y=0}} -- array of x y coordinates, e.g. {{x:0,y:0}, {x:1, y:0}}
+            moveHistory = {{x=0, y=0, z=0}} -- array of x y z coordinates, e.g. {{x:0,y:0, z:0}, {x:1, y:0, z:0}}
         },
         iteration = 1,
     }
@@ -88,6 +89,7 @@ local function assertState(s)
     assert(s.position)
     assert(s.position.x)
     assert(s.position.y)
+    assert(s.position.z)
     assert(s.position.directionFaced)
     assert(s.position.directionFaced.x)
     assert(s.position.directionFaced.y)
@@ -95,12 +97,15 @@ local function assertState(s)
     assert(s.debug)
     assert(s.debug.summary)
     assert(s.debug.actions)
+    assert(s.iteration)
 
     assert(type(s.position.x) == "number")
     assert(type(s.position.y) == "number")
+    assert(type(s.position.z) == "number")
     assert(type(s.position.directionFaced.x) == "number")
     assert(type(s.position.directionFaced.y) == "number")
     assert(type(s.position.moveHistory) == "table")
+    assert(type(s.iteration) == "number")
 end
 
 -- returns true if a dig action was performed
@@ -160,19 +165,23 @@ local function move(state, directionToMove)
         if moved then
             state.position.x = state.position.x + currentDirection.x
             state.position.y = state.position.y + currentDirection.y
-            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y})
+            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y, z = state.position.z})
         end
     elseif directionToMove == DIRECTIONS.BACK then
         moved = t.back()
         if moved then
             state.position.x = state.position.x - currentDirection.x
             state.position.y = state.position.y - currentDirection.y
-            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y})
+            table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y, z = state.position.z})
         end
     elseif directionToMove == DIRECTIONS.UP then
         moved = t.up()
+        state.position.z = state.position.z + 1
+        table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y, z = state.position.z})
     elseif directionToMove == DIRECTIONS.DOWN then
         moved = t.down()
+        state.position.z = state.position.z - 1
+        table.insert(state.position.moveHistory, {x = state.position.x, y = state.position.y, z = state.position.z})
     else
         print("unexpected direction for movement: " .. directionToMove)
     end
