@@ -10,7 +10,7 @@ local function build()
     local state = t.createState()
     local collectionArgs = {
         times = 1,
-        actions = c.box(forward, right, height, "deepslate_bricks")
+        actions = c.floorSection(forward, "deepslate_bricks")
     }
     a.safeCollection(state, collectionArgs)
 end

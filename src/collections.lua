@@ -187,6 +187,7 @@ local fullIceTunnelSection = {
 }
 
 return {
+    floorSection = floorSection,
     box = box,
     floor = floor,
     wall = wall,
